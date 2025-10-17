@@ -1,0 +1,37 @@
+# Network Infrastructure - Git Ignore
+
+# Secrets and credentials
+*.key
+*.pem
+*.cert
+*.crt
+.env
+.env.*
+**/credentials.json
+**/secrets/
+
+# Cloudflare Tunnel
+**/cloudflared/*.json
+tunnel_token.txt
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Backup files
+*.backup
+*.bak
+*~
