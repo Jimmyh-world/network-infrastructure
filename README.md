@@ -60,10 +60,11 @@ network-infrastructure/
 - Purpose: Network-wide ad/malware blocking, VPN, monitoring
 
 **Beast:**
-- Status: Monitoring infrastructure deployed (2025-10-17)
+- Status: Monitoring + Scraper infrastructure deployed (2025-10-17)
 - Installed: Ubuntu Server 24.04, Git, Docker, Node.js, Claude Code CLI
 - Monitoring: Prometheus + Grafana + Node Exporter + cAdvisor
 - Management: Portainer (container GUI)
+- Article Scraping: ydun-scraper (trafilatura-based extraction)
 - External Access: Cloudflare Tunnel (HTTPS via Tunnel)
 - See: `beast/docs/` for complete documentation
 
@@ -90,11 +91,12 @@ Internet (Cloudflare)
 ┌─────────────────────────────────────────────────┐
 │  Docker Compose Network: monitoring             │
 ├─────────────────────────────────────────────────┤
-│ ├─ prometheus:9090    (metrics collector)       │
+│ ├─ prometheus:9090     (metrics collector)       │
 │ ├─ node-exporter:9100 (system metrics)          │
 │ ├─ cadvisor:8080      (container metrics)       │
 │ ├─ grafana:3000       (dashboards)              │
 │ ├─ portainer:9443     (container management)    │
+│ ├─ ydun-scraper:5000  (article extraction)      │
 │ └─ cloudflared        (tunnel client)           │
 └─────────────────────────────────────────────────┘
 ```
@@ -106,8 +108,9 @@ Internet (Cloudflare)
 | Prometheus | http://192.168.68.100:9090 | N/A | Metrics collection, queries |
 | Node Exporter | http://192.168.68.100:9100/metrics | N/A | System metrics (CPU, RAM, disk) |
 | cAdvisor | http://192.168.68.100:8080 | N/A | Docker container metrics |
-| Grafana | http://192.168.68.100:3000 | https://grafana.yourdomain.com | Monitoring dashboards |
-| Portainer | https://192.168.68.100:9443 | https://portainer.yourdomain.com | Container GUI management |
+| Grafana | http://192.168.68.100:3000 | https://grafana.kitt.agency | Monitoring dashboards |
+| Portainer | https://192.168.68.100:9443 | https://portainer.kitt.agency (⚠️) | Container GUI management |
+| Ydun Scraper | http://192.168.68.100:5000 | https://scrape.kitt.agency | Article extraction microservice |
 
 ### Quick Start
 
@@ -185,19 +188,37 @@ ssh pi@192.168.68.x
 
 ## Deployment Completion
 
-**Beast Monitoring Infrastructure** - Fully deployed and documented
-- All 6 Docker services configured and tested
+**Beast Monitoring + Scraper Infrastructure** - Fully deployed and operational
+- All 7 Docker services configured and tested:
+  - Prometheus, Node Exporter, cAdvisor (monitoring)
+  - Grafana (dashboards), Portainer (management)
+  - ydun-scraper (article extraction)
+  - cloudflared (Tunnel client)
 - Prometheus collecting metrics from 3 sources
 - Grafana dashboards auto-loaded
 - Portainer for container management
-- Cloudflare Tunnel for external HTTPS access
+- **Ydun Scraper functional**: Extracts articles via Cloudflare Tunnel
+- Cloudflare Tunnel deployed and active (4 edge connections)
 - Complete operational documentation
 - Emergency rollback procedures documented
 
+**Ydun Scraper Details:**
+- External URL: https://scrape.kitt.agency/scrape
+- Internal URL: http://localhost:5000/scrape
+- Framework: Python Flask with trafilatura article extraction
+- API Format: JSON POST with URLs array
+- Performance: 2+ URLs per second, <500ms per article
+- Status: ✅ Operational, ready for Mundus integration
+
+**Available Documentation:**
+- `beast/docs/YDUN-SCRAPER-DEPLOYMENT.md` - Complete 8-phase workflow
+- `beast/docs/MUNDUS-INTEGRATION.md` - Mundus integration guide
+- `beast/docs/MONITORING-INFRASTRUCTURE-SETUP.md` - Monitoring workflow
+
 **Next Steps:**
-- Manual Cloudflare tunnel setup (requires account + domain)
-- Run validation procedures in `MONITORING-VALIDATION.md`
-- Complete monthly backup and drill procedures
+- Integrate ydun-scraper with Mundus Supabase edge functions
+- Configure advanced Prometheus metrics for scraper (optional)
+- Set up automated backups
 - Monitor system performance baseline
 
 **Last Updated:** 2025-10-17
