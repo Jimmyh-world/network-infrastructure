@@ -11,8 +11,6 @@ volumes:
     driver: local
   portainer-data:
     driver: local
-  cloudflared-creds:
-    driver: local
 
 services:
   prometheus:
@@ -120,7 +118,7 @@ services:
 
   ydun-scraper:
     build:
-      context: ~/ydun-scraper
+      context: /home/jimmyb/ydun-scraper
       dockerfile: Dockerfile
     container_name: ydun-scraper
     restart: unless-stopped
@@ -131,26 +129,6 @@ services:
     command: python src/http_server.py
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    restart: unless-stopped
-    volumes:
-      - ../cloudflare/config.yml:/etc/cloudflared/config.yml:ro
-      - cloudflared-creds:/root/.cloudflared:ro
-    networks:
-      - monitoring
-    command: tunnel run d2d710e7-94cd-41d8-9979-0519fa1233e7
-    depends_on:
-      - grafana
-      - portainer
-      - ydun-scraper
-    healthcheck:
-      test: ["CMD", "cloudflared", "tunnel", "info"]
       interval: 30s
       timeout: 5s
       retries: 3
