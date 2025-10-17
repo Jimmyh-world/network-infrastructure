@@ -28,11 +28,6 @@ services:
       - '--storage.tsdb.retention.time=30d'
     networks:
       - monitoring
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -50,11 +45,6 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     networks:
       - monitoring
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9100/metrics"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -70,11 +60,6 @@ services:
     privileged: true
     networks:
       - monitoring
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
   grafana:
     image: grafana/grafana:latest
@@ -92,11 +77,6 @@ services:
       - GF_INSTALL_PLUGINS=${GF_INSTALL_PLUGINS}
     networks:
       - monitoring
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -110,11 +90,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - monitoring
-    healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:9443"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
   ydun-scraper:
     build:
@@ -126,9 +101,4 @@ services:
       - "5000:8080"
     networks:
       - monitoring
-    command: python src/http_server.py
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+    command: gunicorn --bind 0.0.0.0:8080 --chdir /app/src --workers 4 --worker-class gthread --threads 2 --timeout 120 --access-logfile - --error-logfile - http_server:app
