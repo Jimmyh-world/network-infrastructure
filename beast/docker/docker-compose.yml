@@ -115,3 +115,22 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    volumes:
+      - ../cloudflare/config.yml:/etc/cloudflared/config.yml:ro
+      - ~/.cloudflared:/root/.cloudflared:ro
+    networks:
+      - monitoring
+    command: tunnel run
+    depends_on:
+      - grafana
+      - portainer
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "info"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
