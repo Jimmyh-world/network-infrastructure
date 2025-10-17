@@ -177,19 +177,39 @@ cp docker-compose.yml.backup-YYYYMMDD-HHMMSS docker-compose.yml
 
 ---
 
-## Phase 3: Create .env File
+## Phase 3: Verify/Create .env File
 
 ### 🔴 RED - Implementation
 
-**Objective:** Create production .env with proper secrets
+**Objective:** Ensure production .env exists with proper secrets
 
-**Step 3.1: Create .env from template**
+**Step 3.1: Check if .env already exists**
 ```bash
 cd ~/network-infrastructure/beast/docker
-cp .env.example .env
+ls -la .env
 ```
 
-**Step 3.2: Edit .env with production values**
+**Expected:** Either file exists or "No such file or directory"
+
+**Step 3.2: Create .env if missing**
+```bash
+# Only if .env doesn't exist
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo ".env created from template"
+else
+  echo ".env already exists"
+fi
+```
+
+**Step 3.3: Verify .env contents**
+```bash
+cat .env
+```
+
+**Check:** Does it have secure values or template defaults?
+
+**Step 3.4: Edit .env with production values (if needed)**
 
 Generate secure password:
 ```bash
@@ -212,7 +232,7 @@ GF_INSTALL_PLUGINS=
 PROMETHEUS_RETENTION=720h
 ```
 
-**Step 3.3: Secure .env permissions**
+**Step 3.5: Secure .env permissions**
 ```bash
 chmod 600 .env
 ls -la .env
@@ -222,7 +242,7 @@ ls -la .env
 
 ### 🟢 GREEN - Validation
 
-**Step 3.4: Verify .env values**
+**Step 3.6: Verify .env values**
 ```bash
 cat .env | grep "GF_SECURITY_ADMIN_PASSWORD"
 ```
@@ -236,9 +256,9 @@ cat .env | grep "GF_SERVER_ROOT_URL"
 **Expected:** `https://grafana.kitt.agency`
 
 **Success Criteria:**
-- ✅ .env file created
-- ✅ Secure password set
-- ✅ Correct domain configured
+- ✅ .env file exists (either already there or newly created)
+- ✅ Secure password set (not "admin123")
+- ✅ Correct domain configured (grafana.kitt.agency)
 - ✅ File permissions secured (600)
 
 ### 🔵 CHECKPOINT
