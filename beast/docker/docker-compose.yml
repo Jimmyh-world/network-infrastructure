@@ -116,6 +116,23 @@ services:
       timeout: 5s
       retries: 3
 
+  ydun-scraper:
+    build:
+      context: ~/ydun-scraper
+      dockerfile: Dockerfile
+    container_name: ydun-scraper
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+    command: python src/http_server.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
@@ -129,6 +146,7 @@ services:
     depends_on:
       - grafana
       - portainer
+      - ydun-scraper
     healthcheck:
       test: ["CMD", "cloudflared", "tunnel", "info"]
       interval: 30s
