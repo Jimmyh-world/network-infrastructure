@@ -85,9 +85,11 @@ network-infrastructure/
 Internet (Cloudflare)
     ↓ (HTTPS Tunnel)
 ┌───────────────────────────────┐
-│  Cloudflare Tunnel (port 443) │
+│ Cloudflare Tunnel (host proc) │
+│ d2d710e7-94cd-41d8-9979...   │
+│ 4x edge connections (arn02,06,07)│
 └───────────────────────────────┘
-    ↓
+    ↓ (localhost routing)
 ┌─────────────────────────────────────────────────┐
 │  Docker Compose Network: monitoring             │
 ├─────────────────────────────────────────────────┤
@@ -96,8 +98,7 @@ Internet (Cloudflare)
 │ ├─ cadvisor:8080      (container metrics)       │
 │ ├─ grafana:3000       (dashboards)              │
 │ ├─ portainer:9443     (container management)    │
-│ ├─ ydun-scraper:5000  (article extraction)      │
-│ └─ cloudflared        (tunnel client)           │
+│ └─ ydun-scraper:5000  (article extraction)      │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -111,6 +112,28 @@ Internet (Cloudflare)
 | Grafana | http://192.168.68.100:3000 | https://grafana.kitt.agency | Monitoring dashboards |
 | Portainer | https://192.168.68.100:9443 | https://portainer.kitt.agency (⚠️) | Container GUI management |
 | Ydun Scraper | http://192.168.68.100:5000 | https://scrape.kitt.agency | Article extraction microservice |
+
+### Cloudflare Tunnel (Host-Based)
+
+**Important:** The cloudflared tunnel runs directly on the Beast host (not in Docker).
+
+**Start tunnel:**
+```bash
+cd ~/network-infrastructure/beast
+nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
+```
+
+**Stop tunnel:**
+```bash
+pkill -f "cloudflared tunnel"
+```
+
+**Check status:**
+```bash
+cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7
+```
+
+See `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md` for complete tunnel management guide.
 
 ### Quick Start
 
@@ -130,6 +153,12 @@ docker compose logs -f
 docker compose down
 ```
 
+**Start tunnel (separate process):**
+```bash
+cd ~/network-infrastructure/beast
+nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
+```
+
 ### Documentation
 
 **Deployment Phases:**
@@ -145,6 +174,7 @@ docker compose down
 - `beast/docs/MONITORING-VALIDATION.md` - Testing procedures
 - `beast/docs/MONITORING-OPERATIONS.md` - Day-to-day operations
 - `beast/docs/ROLLBACK-PROCEDURES.md` - Emergency recovery
+- `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md` - Host-based tunnel management
 - `beast/cloudflare/SETUP.md` - Tunnel configuration steps
 
 ---
