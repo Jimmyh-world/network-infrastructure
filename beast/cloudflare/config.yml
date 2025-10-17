@@ -2,15 +2,15 @@
 # This configuration file defines the routes for the beast-tunnel
 # Generated from workflow Phase 5, Step 5.2
 
-tunnel: beast-tunnel
-credentials-file: /home/jimmyb/.cloudflared/beast-tunnel.json
+tunnel: d2d710e7-94cd-41d8-9979-0519fa1233e7
+credentials-file: /home/jimmyb/.cloudflared/d2d710e7-94cd-41d8-9979-0519fa1233e7.json
 
 ingress:
   # Grafana - Monitoring Dashboards
   - hostname: grafana.kitt.agency
     service: http://localhost:3000
 
-  # Portainer - Container Management
+  # Portainer - Container Management (HTTPS with self-signed cert)
   - hostname: portainer.kitt.agency
     service: https://localhost:9443
     originRequest:
@@ -18,7 +18,7 @@ ingress:
 
   # Ydun Scraper - Article extraction microservice
   - hostname: scrape.kitt.agency
-    service: http://ydun-scraper:8080
+    service: http://localhost:5000
 
   # Catch-all - reject any other traffic
   - service: http_status:404
