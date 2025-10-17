@@ -7,18 +7,18 @@ credentials-file: /home/jimmyb/.cloudflared/beast-tunnel.json
 
 ingress:
   # Grafana - Monitoring Dashboards
-  - hostname: grafana.yourdomain.com
+  - hostname: grafana.kitt.agency
     service: http://localhost:3000
 
   # Portainer - Container Management
-  - hostname: portainer.yourdomain.com
+  - hostname: portainer.kitt.agency
     service: https://localhost:9443
     originRequest:
       insecureSkipVerify: true
 
-  # Future: YDUN or other services
-  # - hostname: ydun.yourdomain.com
-  #   service: http://localhost:8080
+  # Ydun Scraper - Article extraction microservice
+  - hostname: scrape.kitt.agency
+    service: http://ydun-scraper:8080
 
   # Catch-all - reject any other traffic
   - service: http_status:404
