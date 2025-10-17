@@ -1,0 +1,15 @@
+version: '3.8'
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  portainer-data:
+    driver: local
+
+services: {}
