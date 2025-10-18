@@ -1,7 +1,7 @@
 # Beast Infrastructure Status
 
-**Last Updated:** 2025-10-17
-**Deployment Date:** 2025-10-17
+**Last Updated:** 2025-10-18
+**Deployment Date:** 2025-10-17 (Initial), 2025-10-18 (Vault added)
 **Status:** ✅ Production-ready
 **Uptime Since:** 2025-10-17 13:00 UTC
 
@@ -13,22 +13,27 @@
 - Complete monitoring infrastructure (Prometheus, Grafana, Node Exporter, cAdvisor)
 - Container management platform (Portainer)
 - Article extraction microservice (ydun-scraper)
+- **Secret management infrastructure (HashiCorp Vault)** ← NEW
 - External HTTPS access (Cloudflare Tunnel on kitt.agency)
 
 **Services Running:**
-- 6 Docker containers (all healthy)
+- 7 Docker containers (all healthy)
 - 1 host process (cloudflared tunnel)
-- Total resource usage: ~2GB RAM, <10GB disk
+- Total resource usage: ~2.4GB RAM, <11GB disk
 
 **External Access:**
 - https://grafana.kitt.agency (monitoring dashboards)
 - https://scrape.kitt.agency (article extraction API)
 - https://portainer.kitt.agency (502 error - self-signed cert issue)
 
-**Last Validation:** 2025-10-17 13:25 UTC
+**Internal Services:**
+- http://192.168.68.100:8200 (Vault API - local network only)
+
+**Last Validation:** 2025-10-18 15:00 UTC
 - All internal endpoints: ✅ 200 OK
 - External HTTPS endpoints: ✅ Working
 - Cloudflare Tunnel: ✅ Connected (4 edge connections)
+- Vault: ✅ Operational (initialized, unsealed)
 
 ---
 
@@ -42,6 +47,7 @@
 | **Grafana** | Docker | 3000 | 3000 | https://grafana.kitt.agency | ✅ Running | Monitoring dashboards, data visualization |
 | **Portainer** | Docker | 9443 | 9443 | ⚠️ 502 error | ✅ Running | Container GUI management |
 | **ydun-scraper** | Docker | 8080 | 5000 | https://scrape.kitt.agency | ✅ Running | Article extraction (trafilatura-based) |
+| **Vault** | Docker | 8200 | 8200 | N/A | ✅ Running | Secret management (KV v2, policies, auth) |
 | **cloudflared** | Host process | N/A | N/A | N/A | ✅ Running | Cloudflare Tunnel client |
 
 ### Service Details
@@ -95,6 +101,22 @@
 - **Health Check:** `curl http://localhost:8080/health`
 - **API Endpoint:** POST /scrape with JSON body {"urls": [...]}
 
+#### Vault
+- **Image:** `hashicorp/vault:1.15`
+- **Version:** 1.15.6
+- **Port:** 8200 (HTTP, TLS disabled - local network only)
+- **Storage Backend:** File-based (persistent volume at /home/jimmyb/vault/data)
+- **Secrets Engine:** KV v2 enabled at secret/ path
+- **Authentication:** Userpass (768h TTL), Token-based
+- **Policies:** admin-policy, bot-policy, external-readonly (policy-based access control)
+- **Audit Logging:** Enabled at /home/jimmyb/vault/logs/audit.log
+- **Unseal Keys:** 1 (threshold: 1, secured off-server)
+- **Status:** Initialized, unsealed, operational
+- **Health Check:** `curl http://localhost:8200/v1/sys/health`
+- **Management Scripts:** check-vault-health.sh, manage-policies.sh, create-token.sh
+- **Deployment Docs:** https://github.com/Jimmyh-world/dev-vault
+- **Resource Usage:** ~50MB RAM, <1% CPU, ~500MB disk
+
 #### cloudflared
 - **Type:** Host process (not Docker container)
 - **Tunnel ID:** d2d710e7-94cd-41d8-9979-0519fa1233e7
@@ -131,8 +153,9 @@
 | Grafana | ~100MB | <2% | ~200MB | Dashboards + config |
 | Portainer | ~50MB | <1% | ~100MB | Config + images |
 | ydun-scraper | ~100MB | <2% | ~500MB | Python + deps |
+| Vault | ~395MB | <1% | ~500MB | Secret storage + audit logs |
 | cloudflared | ~50MB | <1% | Negligible | Tunnel client |
-| **Total Used** | **~670MB** | **<15%** | **~3GB** | |
+| **Total Used** | **~1.06GB** | **<15%** | **~3.5GB** | |
 | **Available** | **~95GB** | **>85%** | **~1.99TB** | Ready for blockchain nodes |
 
 **Resource Headroom:** Massive capacity available for future services (Cardano nodes, Ergo nodes, etc.)
@@ -177,7 +200,8 @@ Beast Host
       ├── cadvisor:8080
       ├── grafana:3000
       ├── portainer:9443
-      └── ydun-scraper:8080 (mapped to host:5000)
+      ├── ydun-scraper:8080 (mapped to host:5000)
+      └── vault:8200
 ```
 
 ### Port Mappings
@@ -188,6 +212,7 @@ Beast Host
 | 5000 | ydun-scraper:8080 | Scraper | HTTP |
 | 8000 | portainer:8000 | Portainer Edge | TCP |
 | 8080 | cadvisor:8080 | cAdvisor | HTTP |
+| 8200 | vault:8200 | Vault | HTTP |
 | 9090 | prometheus:9090 | Prometheus | HTTP |
 | 9100 | node-exporter:9100 | Node Exporter | HTTP |
 | 9443 | portainer:9443 | Portainer | HTTPS |
@@ -221,6 +246,10 @@ https://192.168.68.100:9443
 # ydun-scraper
 http://192.168.68.100:5000/health
 http://192.168.68.100:5000/scrape
+
+# Vault
+http://192.168.68.100:8200/v1/sys/health
+http://192.168.68.100:8200/ui (Vault UI)
 
 # Beast SSH
 ssh jimmyb@192.168.68.100
@@ -789,6 +818,35 @@ df -h
 
 ## Change Log
 
+### 2025-10-18 - Vault Secret Management Infrastructure
+
+**Deployed:**
+- HashiCorp Vault v1.15.6 (secret management)
+- KV v2 secrets engine (versioned secret storage)
+- Policy-based access control (admin, bot, external-readonly)
+- Userpass authentication (768h TTL)
+- File audit logging
+
+**Configuration:**
+- Vault container on port 8200
+- File-based storage backend (/home/jimmyb/vault/data)
+- 3 management scripts (health check, policy management, token creation)
+- Test secrets in hierarchical structure
+
+**Validation:**
+- All policy enforcement tests passed (6/6)
+- Security controls validated
+- Local network access only (no external exposure yet)
+
+**Documentation:**
+- Repository: https://github.com/Jimmyh-world/dev-vault
+- Phase 1: Infrastructure deployment (10 min, CHECKPOINT approved)
+- Phase 2: Secrets & policies (25 min, CHECKPOINT approved)
+
+**Status:** Operational, ready for production secrets
+
+---
+
 ### 2025-10-17 - Initial Deployment
 
 **Deployed:**
@@ -810,4 +868,4 @@ df -h
 
 ---
 
-**Last Updated:** 2025-10-17
+**Last Updated:** 2025-10-18
