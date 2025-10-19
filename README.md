@@ -53,11 +53,13 @@ network-infrastructure/
 
 ---
 
-## Current Status (2025-10-17)
+## Current Status (2025-10-19)
 
 **Guardian Pi:**
-- Status: Planned (hardware not yet deployed)
-- Purpose: Network-wide ad/malware blocking, VPN, monitoring
+- Status: Planned (hardware arriving 2025-10-20)
+- Purpose: Network-wide ad/malware blocking, VPN, monitoring, always-on services
+- Design Docs: `~/dev-guardian/` (architecture and planning)
+- Deployment Configs: `guardian/` (this repository)
 
 **Beast:**
 - Status: Monitoring + Scraper infrastructure deployed (2025-10-17)
