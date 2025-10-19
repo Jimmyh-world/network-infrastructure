@@ -15,7 +15,7 @@ Before starting new work, verify infrastructure is healthy:
 ssh jimmyb@192.168.68.100
 
 # Check Docker services (should see 6 containers "Up (healthy)")
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose ps
 
 # Check Cloudflare Tunnel (should see exactly 1 process)
@@ -83,7 +83,7 @@ https://192.168.68.100:9443      # Portainer
 
 **Grafana:**
 - Username: `admin`
-- Password: `cat ~/network-infrastructure/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD` (on Beast)
+- Password: `cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD` (on Beast)
 
 **Portainer:**
 - Set password on first access
@@ -101,10 +101,10 @@ https://192.168.68.100:9443      # Portainer
 
 ### Current Repositories
 
-**network-infrastructure** (this repo)
+**dev-network** (this repo)
 - **Purpose:** Guardian Pi + Beast infrastructure
 - **Contains:** Docker configs, monitoring setup, Cloudflare Tunnel
-- **URL:** https://github.com/Jimmyh-world/network-infrastructure
+- **URL:** https://github.com/Jimmyh-world/dev-network
 
 **dev-lab**
 - **Purpose:** General development workspace
@@ -138,7 +138,7 @@ https://192.168.68.100:9443      # Portainer
 
 **Repository Architecture:**
 1. Split dev-lab into focused repositories
-2. Created network-infrastructure (this repo)
+2. Created dev-network (this repo)
 3. Created ydun-scraper microservice repo
 4. Documented repository split strategy
 
@@ -283,7 +283,7 @@ const response = await fetch(scraperUrl, {
 
 ### 1. Repository Split Strategy
 
-- **network-infrastructure:** Guardian + Beast infrastructure ONLY
+- **dev-network:** Guardian + Beast infrastructure ONLY
 - **dev-lab:** Research, templates, learning (reduced scope)
 - **ydun-scraper:** Independent microservice
 - **Future:** Create focused repos for blockchain nodes, Mundus, etc.
@@ -345,11 +345,11 @@ See: `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md`
 ssh jimmyb@192.168.68.100
 
 # Start all Docker services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose up -d
 
 # Start Cloudflare Tunnel (if not running)
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 
 # Stop all Docker services
@@ -386,7 +386,7 @@ df -h
 
 ```bash
 # Pull latest (do this at session start!)
-cd ~/network-infrastructure
+cd ~/dev-network
 git pull origin main
 
 # Check status
@@ -442,7 +442,7 @@ ps aux | grep "cloudflared tunnel" | grep -v grep
 
 # If multiple processes, kill and restart
 pkill -f "cloudflared tunnel"
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 
 # Check logs
@@ -459,7 +459,7 @@ cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7
 sudo systemctl restart docker
 
 # Rebuild containers
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 docker compose up -d --build
 

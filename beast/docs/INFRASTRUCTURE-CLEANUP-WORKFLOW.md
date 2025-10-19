@@ -21,7 +21,7 @@
 - [ ] All services currently running and functional
 - [ ] Backup of current docker-compose.yml exists
 - [ ] cloudflared tunnel currently connected (verify with `cloudflared tunnel info`)
-- [ ] Working directory: `~/network-infrastructure`
+- [ ] Working directory: `~/dev-network`
 
 ---
 
@@ -68,7 +68,7 @@ cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7
 **Rollback if needed:**
 ```bash
 # Restart tunnel (if needed to rollback)
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -84,7 +84,7 @@ nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.l
 
 **Step 2.1: Stop all Docker services**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 ```
 
@@ -169,7 +169,7 @@ grep "context:" docker-compose.yml
 
 **Rollback if needed:**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 cp docker-compose.yml.backup-YYYYMMDD-HHMMSS docker-compose.yml
 ```
 
@@ -185,7 +185,7 @@ cp docker-compose.yml.backup-YYYYMMDD-HHMMSS docker-compose.yml
 
 **Step 3.1: Check if .env already exists**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 ls -la .env
 ```
 
@@ -281,7 +281,7 @@ rm .env
 
 **Step 4.1: Start services**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose up -d
 ```
 
@@ -339,7 +339,7 @@ docker compose logs --tail 20
 
 **Rollback if needed:**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 docker compose -f docker-compose.yml.backup-YYYYMMDD-HHMMSS up -d
 ```
@@ -361,7 +361,7 @@ rm -f /tmp/cloudflared.log
 
 **Step 5.2: Start tunnel**
 ```bash
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -415,7 +415,7 @@ curl -s -o /dev/null -w "%{http_code}" https://scrape.kitt.agency/health
 **Rollback if needed:**
 ```bash
 pkill -f "cloudflared tunnel"
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -508,7 +508,7 @@ docker stats --no-stream
 
 **Step 7.1: Check git status**
 ```bash
-cd ~/network-infrastructure
+cd ~/dev-network
 git status
 ```
 
@@ -605,7 +605,7 @@ The cloudflared tunnel runs directly on the Beast host (not in a Docker containe
 ## Current Configuration
 
 **Tunnel ID:** d2d710e7-94cd-41d8-9979-0519fa1233e7
-**Config File:** ~/network-infrastructure/beast/cloudflare/config.yml
+**Config File:** ~/dev-network/beast/cloudflare/config.yml
 **Credentials:** ~/.cloudflared/d2d710e7-94cd-41d8-9979-0519fa1233e7.json
 **Log File:** /tmp/cloudflared.log
 
@@ -615,7 +615,7 @@ The cloudflared tunnel runs directly on the Beast host (not in a Docker containe
 
 ### Start Tunnel
 \`\`\`bash
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 \`\`\`
 
@@ -648,7 +648,7 @@ If you see multiple cloudflared processes:
 pkill -f "cloudflared tunnel"
 
 # Start one
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 \`\`\`
 
@@ -687,7 +687,7 @@ Add section about cloudflared:
 See: `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md`
 
 Manage tunnel:
-- Start: `cd ~/network-infrastructure/beast && nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &`
+- Start: `cd ~/dev-network/beast && nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &`
 - Stop: `pkill -f "cloudflared tunnel"`
 - Status: `cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7`
 ```

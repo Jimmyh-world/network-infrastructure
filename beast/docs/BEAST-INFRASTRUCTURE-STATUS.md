@@ -291,8 +291,8 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 ### Grafana
 
 - **Username:** `admin`
-- **Password:** See `~/network-infrastructure/beast/docker/.env`
-- **File Location (Beast):** `/home/jimmyb/network-infrastructure/beast/docker/.env`
+- **Password:** See `~/dev-network/beast/docker/.env`
+- **File Location (Beast):** `/home/jimmyb/dev-network/beast/docker/.env`
 - **Status:** Gitignored (not in version control)
 - **Generation:** `openssl rand -base64 32`
 
@@ -323,7 +323,7 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 
 ### Docker Compose
 
-**File:** `~/network-infrastructure/beast/docker/docker-compose.yml`
+**File:** `~/dev-network/beast/docker/docker-compose.yml`
 
 **Status:** Version controlled (GitHub)
 
@@ -339,7 +339,7 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 
 ### Environment Variables
 
-**File:** `~/network-infrastructure/beast/docker/.env`
+**File:** `~/dev-network/beast/docker/.env`
 
 **Status:** Gitignored (secrets)
 
@@ -353,7 +353,7 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 
 ### Prometheus Configuration
 
-**File:** `~/network-infrastructure/beast/monitoring/prometheus/prometheus.yml`
+**File:** `~/dev-network/beast/monitoring/prometheus/prometheus.yml`
 
 **Status:** Version controlled (GitHub)
 
@@ -368,7 +368,7 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 
 ### Grafana Provisioning
 
-**Directory:** `~/network-infrastructure/beast/monitoring/grafana/provisioning/`
+**Directory:** `~/dev-network/beast/monitoring/grafana/provisioning/`
 
 **Status:** Version controlled (GitHub)
 
@@ -382,7 +382,7 @@ ssh jimmyb@192.168.68.100 "hostname && docker ps --format 'table {{.Names}}\t{{.
 
 ### Cloudflare Tunnel Configuration
 
-**File:** `~/network-infrastructure/beast/cloudflare/config.yml`
+**File:** `~/dev-network/beast/cloudflare/config.yml`
 
 **Status:** Version controlled (GitHub)
 
@@ -452,11 +452,11 @@ ydun-scraper      Up (healthy)
 
 ```bash
 # Start Docker services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose up -d
 
 # Start Cloudflare Tunnel
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 
 # Verify
@@ -468,7 +468,7 @@ ps aux | grep "cloudflared tunnel" | grep -v grep
 
 ```bash
 # Stop Docker services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 
 # Stop Cloudflare Tunnel
@@ -478,7 +478,7 @@ pkill -f "cloudflared tunnel"
 ### Restart Individual Service
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose restart <service-name>
 
 # Examples:
@@ -490,7 +490,7 @@ docker compose restart ydun-scraper
 
 ```bash
 # All services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose logs -f
 
 # Specific service
@@ -521,7 +521,7 @@ df -h
 
 ```bash
 # Pull latest images
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose pull
 
 # Recreate containers with new images
@@ -590,10 +590,10 @@ node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpo
 ### What to Backup
 
 **Critical:**
-- Grafana data: `~/network-infrastructure/beast/docker/` (grafana-data volume)
-- Prometheus data: `~/network-infrastructure/beast/docker/` (prometheus-data volume)
-- Portainer data: `~/network-infrastructure/beast/docker/` (portainer-data volume)
-- Environment file: `~/network-infrastructure/beast/docker/.env`
+- Grafana data: `~/dev-network/beast/docker/` (grafana-data volume)
+- Prometheus data: `~/dev-network/beast/docker/` (prometheus-data volume)
+- Portainer data: `~/dev-network/beast/docker/` (portainer-data volume)
+- Environment file: `~/dev-network/beast/docker/.env`
 - Cloudflare credentials: `~/.cloudflared/`
 
 **Non-Critical (version controlled):**
@@ -609,14 +609,14 @@ docker run --rm -v grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/g
 docker run --rm -v portainer-data:/data -v $(pwd):/backup alpine tar czf /backup/portainer-data-$(date +%Y%m%d).tar.gz -C /data .
 
 # Backup .env and credentials
-tar czf beast-secrets-$(date +%Y%m%d).tar.gz ~/network-infrastructure/beast/docker/.env ~/.cloudflared/
+tar czf beast-secrets-$(date +%Y%m%d).tar.gz ~/dev-network/beast/docker/.env ~/.cloudflared/
 ```
 
 ### Recovery Procedure
 
 ```bash
 # Stop services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 
 # Restore volumes
@@ -636,7 +636,7 @@ docker compose up -d
 **Complete infrastructure loss:**
 1. Fresh Ubuntu Server 24.04 install on Beast
 2. Install Git, Docker, Node.js, Claude Code CLI
-3. Clone network-infrastructure repository
+3. Clone dev-network repository
 4. Restore .env and Cloudflare credentials from backup
 5. Run `docker compose up -d`
 6. Start Cloudflare Tunnel
@@ -761,7 +761,7 @@ ls -la ~/.cloudflared/
 
 # Restart tunnel
 pkill -f "cloudflared tunnel"
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 

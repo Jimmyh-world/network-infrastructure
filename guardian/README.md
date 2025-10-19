@@ -32,11 +32,11 @@ This directory contains only deployment artifacts and configs.
 
 ```
 dev-guardian/                    → Design, specs, planning (Chromebook)
-network-infrastructure/guardian/ → Deployment, configs, runtime (Guardian Pi 5)
+dev-network/guardian/ → Deployment, configs, runtime (Guardian Pi 5)
 ```
 
 **Design decisions:** Made in `~/dev-guardian/`
-**Deployment configs:** Stored here in `~/network-infrastructure/guardian/`
+**Deployment configs:** Stored here in `~/dev-network/guardian/`
 
 ---
 

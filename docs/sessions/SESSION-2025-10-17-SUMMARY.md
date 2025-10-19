@@ -68,12 +68,12 @@ This session successfully deployed a complete monitoring and service infrastruct
 **09:00** - Repository split discussion
 - Identified dev-lab getting too big (context overload)
 - Decided on focused repository strategy
-- Created network-infrastructure as first split
+- Created dev-network as first split
 
-**09:30** - network-infrastructure setup
+**09:30** - dev-network setup
 - Created new repository
 - Added project templates (AGENTS.md, CLAUDE.md, JIMMYS-WORKFLOW.md)
-- Pushed to GitHub: https://github.com/Jimmyh-world/network-infrastructure
+- Pushed to GitHub: https://github.com/Jimmyh-world/dev-network
 
 **10:00** - Claude Code CLI setup on Beast
 - Installed Node.js v20.19.5, npm 10.8.2
@@ -139,7 +139,7 @@ This session successfully deployed a complete monitoring and service infrastruct
 | Split repositories | dev-lab too big, AI context confusion | Keep monolithic repo | ✅ Better organization, clearer boundaries |
 | kitt.agency domain | User had domain available, free Cloudflare tier | Purchase new domain or use different service | ✅ Working perfectly |
 | Host-based tunnel vs Docker | Avoid Docker networking complexity for tunnel | cloudflared as 7th Docker service | ✅ Simpler, more reliable |
-| ydun-scraper as separate repo | Independent microservice lifecycle | Include in network-infrastructure | ✅ Cleaner separation |
+| ydun-scraper as separate repo | Independent microservice lifecycle | Include in dev-network | ✅ Cleaner separation |
 | Port 5000 for scraper external | Avoid conflict with cAdvisor (8080) | Use different port | ✅ No conflicts, clean routing |
 | Monitoring network isolation | Secure container communication | Host networking | ✅ Better security |
 | 30-day Prometheus retention | Balance storage vs history | 7 days or 90 days | ✅ Good balance (2GB storage) |
@@ -228,7 +228,7 @@ Haiku 4.5 in YOLO mode proved highly effective for infrastructure deployment:
 
 ## Git Activity
 
-### network-infrastructure Repository
+### dev-network Repository
 
 **Commits created this session:** 7
 
@@ -293,7 +293,7 @@ Key commits:
 
 ### Code Repositories
 
-- ✅ network-infrastructure: Infrastructure configs and docs
+- ✅ dev-network: Infrastructure configs and docs
 - ✅ ydun-scraper: Microservice deployed and tested
 - ✅ dev-lab: Templates and blockchain research
 
@@ -397,7 +397,7 @@ Key commits:
 
 ### GitHub
 
-- **Repositories:** 3 (network-infrastructure, dev-lab, ydun-scraper)
+- **Repositories:** 3 (dev-network, dev-lab, ydun-scraper)
 - **Visibility:** Private
 - **Cost:** $0/month (personal account)
 

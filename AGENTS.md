@@ -1,6 +1,6 @@
 # Network Infrastructure - AI Assistant Guidelines
 
-**Repository**: network-infrastructure
+**Repository**: dev-network
 **Purpose**: Home network infrastructure (Guardian + Beast + networking)
 **Created**: 2025-10-17
 
@@ -65,7 +65,7 @@ All infrastructure changes MUST follow RED/GREEN/CHECKPOINT:
 ```markdown
 ## 🔴 RED - Deploy Grafana
 
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose up -d grafana
 
 ## 🟢 GREEN - Validate
@@ -107,7 +107,7 @@ Time to rollback: 30 seconds
 ssh jimmyb@192.168.68.100
 
 # Docker operations
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose up -d
 docker compose logs -f
 docker ps

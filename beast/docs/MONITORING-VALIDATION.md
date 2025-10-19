@@ -16,7 +16,7 @@ docker --version
 docker compose version
 
 # ✅ Repository structure complete
-ls -R ~/network-infrastructure/beast/
+ls -R ~/dev-network/beast/
 
 # ✅ Configuration files present
 test -f beast/docker/docker-compose.yml && echo "✓ docker-compose.yml exists"
@@ -36,7 +36,7 @@ test -f beast/cloudflare/config.yml && echo "✓ Cloudflare config exists"
 ### Docker Service Startup
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Start monitoring stack (all services)
 docker compose up -d
@@ -245,7 +245,7 @@ curl -k -I https://localhost:9443
 
 ```bash
 # ✅ Tunnel configuration present
-test -f ~/network-infrastructure/beast/cloudflare/config.yml && echo "✓ Config exists"
+test -f ~/dev-network/beast/cloudflare/config.yml && echo "✓ Config exists"
 
 # ✅ Cloudflare tunnel CLI installed (if doing manual setup)
 cloudflared tunnel list
@@ -392,7 +392,7 @@ ls -la ~/.cloudflared/
 # Expected: *.json file exists with proper permissions
 
 # Check tunnel config syntax
-cat ~/network-infrastructure/beast/cloudflare/config.yml
+cat ~/dev-network/beast/cloudflare/config.yml
 # Expected: Valid YAML with no errors
 
 # Check Cloudflare dashboard

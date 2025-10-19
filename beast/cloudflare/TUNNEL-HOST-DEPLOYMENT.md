@@ -23,7 +23,7 @@ The cloudflared tunnel runs directly on the Beast host (not in a Docker containe
 
 **Tunnel ID:** `d2d710e7-94cd-41d8-9979-0519fa1233e7`
 **Tunnel Name:** `beast-tunnel`
-**Config File:** `~/network-infrastructure/beast/cloudflare/config.yml`
+**Config File:** `~/dev-network/beast/cloudflare/config.yml`
 **Credentials File:** `~/.cloudflared/d2d710e7-94cd-41d8-9979-0519fa1233e7.json`
 **Origin Certificate:** `~/.cloudflared/cert.pem`
 **Log File:** `/tmp/cloudflared.log`
@@ -44,7 +44,7 @@ The cloudflared tunnel runs directly on the Beast host (not in a Docker containe
 ### Start Tunnel
 
 ```bash
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -121,7 +121,7 @@ sleep 2
 ps aux | grep "cloudflared tunnel" | grep -v grep
 
 # Start one fresh
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 sleep 5
 
@@ -146,7 +146,7 @@ ls -la ~/.cloudflared/
 
 2. Check config file is readable:
 ```bash
-cat ~/network-infrastructure/beast/cloudflare/config.yml
+cat ~/dev-network/beast/cloudflare/config.yml
 ```
 
 3. Check logs for authentication errors:
@@ -159,7 +159,7 @@ tail -50 /tmp/cloudflared.log | grep -E "ERR|auth"
 rm -f /tmp/cloudflared.log
 pkill -f "cloudflared tunnel"
 sleep 2
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 sleep 5
 tail -30 /tmp/cloudflared.log
@@ -174,7 +174,7 @@ tail -30 /tmp/cloudflared.log
 1. Verify local service is running:
 ```bash
 # Check which service is failing
-docker compose ps  # in ~/network-infrastructure/beast/docker
+docker compose ps  # in ~/dev-network/beast/docker
 
 # Test local endpoint
 curl http://localhost:3000/api/health  # Grafana
@@ -289,7 +289,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=jimmyb
-WorkingDirectory=/home/jimmyb/network-infrastructure/beast
+WorkingDirectory=/home/jimmyb/dev-network/beast
 ExecStart=/usr/local/bin/cloudflared tunnel --config cloudflare/config.yml run
 Restart=on-failure
 RestartSec=5

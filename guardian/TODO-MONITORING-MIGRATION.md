@@ -17,5 +17,5 @@
 
 **Cross-Reference:** 
 - Design: `~/dev-guardian/docs/MONITORING-MIGRATION-SPEC.md`
-- Beast configs: `~/network-infrastructure/beast/docker/docker-compose.yml`
+- Beast configs: `~/dev-network/beast/docker/docker-compose.yml`
 

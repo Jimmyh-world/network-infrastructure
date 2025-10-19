@@ -10,7 +10,7 @@
 
 ```bash
 # Navigate to docker directory
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Start all monitoring services
 docker compose up -d
@@ -56,7 +56,7 @@ docker compose down -v
 ### Starting the Stack
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Start all services
 docker compose up -d
@@ -71,7 +71,7 @@ docker compose ps --format "table {{.Names}}\t{{.Status}}"
 ### Stopping the Stack
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Graceful stop (containers restarted on next up)
 docker compose stop

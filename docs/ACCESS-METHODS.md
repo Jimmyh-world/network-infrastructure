@@ -87,7 +87,7 @@ curl http://localhost:8080/healthz     # cAdvisor
 **Docker Management:**
 ```bash
 # Via Docker Compose
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose ps
 docker compose logs -f
 docker compose restart <service>
@@ -136,10 +136,10 @@ https://scrape.kitt.agency
 **Get Password:**
 ```bash
 # On Beast
-cat ~/network-infrastructure/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD
+cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD
 
 # Or from Chromebook via SSH
-ssh jimmyb@192.168.68.100 "cat ~/network-infrastructure/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
+ssh jimmyb@192.168.68.100 "cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
 ```
 
 **Security Notes:**
@@ -151,7 +151,7 @@ ssh jimmyb@192.168.68.100 "cat ~/network-infrastructure/beast/docker/.env | grep
 **Reset Password:**
 ```bash
 # On Beast
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose exec grafana grafana-cli admin reset-admin-password <new-password>
 
 # Update .env file
@@ -475,10 +475,10 @@ sudo systemctl status ssh
 **Solutions:**
 ```bash
 # Get current password
-ssh jimmyb@192.168.68.100 "cat ~/network-infrastructure/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
+ssh jimmyb@192.168.68.100 "cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
 
 # Reset password
-ssh jimmyb@192.168.68.100 "cd ~/network-infrastructure/beast/docker && docker compose exec grafana grafana-cli admin reset-admin-password newpassword123"
+ssh jimmyb@192.168.68.100 "cd ~/dev-network/beast/docker && docker compose exec grafana grafana-cli admin reset-admin-password newpassword123"
 ```
 
 ### Problem: Certificate Warning
@@ -564,7 +564,7 @@ ssh jimmyb@192.168.68.100 "cd ~/network-infrastructure/beast/docker && docker co
 ├── id_rsa.pub          # SSH public key (644)
 └── known_hosts         # Known SSH hosts (644)
 
-~/network-infrastructure/
+~/dev-network/
 └── (no secrets - all gitignored)
 ```
 
@@ -579,7 +579,7 @@ ssh jimmyb@192.168.68.100 "cd ~/network-infrastructure/beast/docker && docker co
 ├── cert.pem           # Cloudflare origin cert (600)
 └── d2d710e7-94cd-41d8-9979-0519fa1233e7.json  # Tunnel creds (600)
 
-~/network-infrastructure/beast/docker/
+~/dev-network/beast/docker/
 └── .env               # Environment variables (600)
     ├── GF_SECURITY_ADMIN_PASSWORD
     ├── GF_SERVER_ROOT_URL
@@ -608,7 +608,7 @@ ssh jimmyb@192.168.68.100 "cd ~/network-infrastructure/beast/docker && docker co
 
 **Account:** Jimmyh-world
 **Repositories:** 3 private repos
-- network-infrastructure
+- dev-network
 - dev-lab
 - ydun-scraper
 
@@ -658,7 +658,7 @@ ssh -L 3000:localhost:3000 jimmyb@192.168.68.100
 
 ```bash
 # Grafana password
-ssh jimmyb@192.168.68.100 "cat ~/network-infrastructure/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
+ssh jimmyb@192.168.68.100 "cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD"
 
 # Cloudflare credentials
 ssh jimmyb@192.168.68.100 "ls -la ~/.cloudflared/"

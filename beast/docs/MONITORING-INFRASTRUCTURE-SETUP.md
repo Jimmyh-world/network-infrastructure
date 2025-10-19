@@ -63,7 +63,7 @@ This document defines the complete RED/GREEN/CHECKPOINT workflow for deploying a
   - `beast/docker/.env.example`
 
 🟢 **VALIDATE:**
-- Run: `cd ~/network-infrastructure/beast/docker && docker compose config` (expect: valid YAML, no errors)
+- Run: `cd ~/dev-network/beast/docker && docker compose config` (expect: valid YAML, no errors)
 - Check: Networks defined correctly
 - Check: Volumes defined correctly
 - Verify: No syntax errors in docker-compose.yml
@@ -74,7 +74,7 @@ This document defines the complete RED/GREEN/CHECKPOINT workflow for deploying a
 **Estimated**: 10 minutes
 **Actual**: [TBD]
 **Tests**: docker compose config validation
-**Rollback**: `rm -rf ~/network-infrastructure/beast/docker/*`
+**Rollback**: `rm -rf ~/dev-network/beast/docker/*`
 **Dependencies**: None
 **Blockers**: None
 **Notes**: Base structure only, no services yet
@@ -160,7 +160,7 @@ This document defines the complete RED/GREEN/CHECKPOINT workflow for deploying a
 **Build**: N/A (Docker deployment)
 **Rollback**:
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down prometheus node-exporter cadvisor
 docker volume rm beast_prometheus-data
 git checkout beast/docker/docker-compose.yml
@@ -376,13 +376,13 @@ cloudflared tunnel login
 cloudflared tunnel create beast-tunnel
 
 # Copy credentials
-cp ~/.cloudflared/*.json ~/network-infrastructure/beast/cloudflare/tunnel-credentials.json
+cp ~/.cloudflared/*.json ~/dev-network/beast/cloudflare/tunnel-credentials.json
 ```
 
 🟢 **VALIDATE:**
 - Run: `cloudflared --version` (expect: version displayed)
 - Run: `cloudflared tunnel list` (expect: beast-tunnel listed)
-- Check: `ls ~/network-infrastructure/beast/cloudflare/` (expect: tunnel-credentials.json exists)
+- Check: `ls ~/dev-network/beast/cloudflare/` (expect: tunnel-credentials.json exists)
 - Verify: Credentials file is valid JSON
 - Check: Tunnel UUID matches credentials file
 
@@ -395,7 +395,7 @@ cp ~/.cloudflared/*.json ~/network-infrastructure/beast/cloudflare/tunnel-creden
 **Rollback**:
 ```bash
 cloudflared tunnel delete beast-tunnel
-rm ~/network-infrastructure/beast/cloudflare/tunnel-credentials.json
+rm ~/dev-network/beast/cloudflare/tunnel-credentials.json
 sudo apt remove cloudflared
 ```
 **Dependencies**: None (external Cloudflare service)
@@ -504,7 +504,7 @@ git checkout beast/docker/docker-compose.yml
 🟢 **VALIDATE:**
 
 **Docker Health:**
-- Run: `cd ~/network-infrastructure/beast/docker && docker compose ps` (expect: all services UP)
+- Run: `cd ~/dev-network/beast/docker && docker compose ps` (expect: all services UP)
 - Run: `docker stats --no-stream` (expect: resource usage displayed)
 - Check: All containers healthy, no restart loops
 
@@ -554,9 +554,9 @@ git checkout beast/docker/docker-compose.yml
 **Tests**: ✅ All services healthy, ✅ Metrics flowing, ✅ Dashboards working, ✅ External HTTPS access working
 **Rollback**: Full teardown:
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down -v
-rm -rf ~/network-infrastructure/beast/
+rm -rf ~/dev-network/beast/
 cloudflared tunnel delete beast-tunnel
 ```
 **Dependencies**: All previous steps (COMPLETE)
@@ -625,7 +625,7 @@ Before starting Phase 1, verify:
 **Full Stack Rollback**:
 ```bash
 # Stop all services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down -v
 
 # Remove all data volumes
@@ -635,7 +635,7 @@ docker volume rm beast_prometheus-data beast_grafana-data beast_portainer-data
 cloudflared tunnel delete beast-tunnel
 
 # Remove configuration files
-cd ~/network-infrastructure
+cd ~/dev-network
 git checkout beast/
 # Or: rm -rf beast/
 ```

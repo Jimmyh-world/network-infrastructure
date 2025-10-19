@@ -12,8 +12,8 @@
 
 **Rollback Command:**
 ```bash
-rm -rf ~/network-infrastructure/beast/docker/*.yml
-rm -f ~/network-infrastructure/beast/docker/.env.example
+rm -rf ~/dev-network/beast/docker/*.yml
+rm -f ~/dev-network/beast/docker/.env.example
 git checkout beast/docker/
 ```
 
@@ -26,7 +26,7 @@ git checkout beast/docker/
 
 **Rollback Command:**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down prometheus node-exporter cadvisor
 docker volume rm beast_prometheus-data
 git checkout beast/docker/docker-compose.yml
@@ -42,7 +42,7 @@ git checkout beast/monitoring/prometheus/
 
 **Rollback Command:**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down grafana
 docker volume rm beast_grafana-data
 git checkout beast/docker/docker-compose.yml
@@ -58,7 +58,7 @@ rm -rf beast/monitoring/grafana/
 
 **Rollback Command:**
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down portainer
 docker volume rm beast_portainer-data
 git checkout beast/docker/docker-compose.yml
@@ -74,14 +74,14 @@ git checkout beast/docker/docker-compose.yml
 **Rollback Command:**
 ```bash
 # Stop tunnel container
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down cloudflared
 
 # Delete Cloudflare tunnel (requires CLI)
 cloudflared tunnel delete beast-tunnel
 
 # Remove configuration
-rm -f ~/network-infrastructure/beast/cloudflare/config.yml
+rm -f ~/dev-network/beast/cloudflare/config.yml
 rm -f ~/.cloudflared/beast-tunnel.json
 
 # Uninstall CLI (optional)
@@ -105,7 +105,7 @@ echo "🔴 BEGINNING FULL STACK ROLLBACK..."
 
 # 1. Stop all services
 echo "Stopping services..."
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down -v
 
 # 2. Remove all volumes
@@ -114,12 +114,12 @@ docker volume rm beast_prometheus-data beast_grafana-data beast_portainer-data 2
 
 # 3. Reset git (optional - comment out if you want to keep configuration)
 echo "Resetting configuration to last commit..."
-cd ~/network-infrastructure
+cd ~/dev-network
 git checkout beast/
 
 # 4. Delete entire beast directory (DESTRUCTIVE)
 # UNCOMMENT ONLY IF YOU WANT COMPLETE WIPE
-# rm -rf ~/network-infrastructure/beast/
+# rm -rf ~/dev-network/beast/
 
 # 5. Cloudflare cleanup (requires manual verification)
 echo "⚠️  Manual Cloudflare cleanup needed:"
@@ -143,7 +143,7 @@ echo "Total time: ~5 minutes"
 ### Scenario A: Rollback Monitoring Only (Keep Portainer & Tunnel)
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Stop monitoring services
 docker compose down prometheus node-exporter cadvisor grafana
@@ -167,7 +167,7 @@ docker compose up -d portainer cloudflared
 ### Scenario B: Rollback Tunnel Only (Keep Internal Monitoring)
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Stop tunnel
 docker compose down cloudflared
@@ -194,7 +194,7 @@ docker compose up -d
 **Example: Update Grafana without downtime**
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # 1. Pull new image
 docker compose pull grafana
@@ -297,7 +297,7 @@ curl -s http://localhost:3000/api/health | jq '.database'
 
 ```bash
 # Daily backup of Prometheus
-0 2 * * * cd ~/network-infrastructure/beast/docker && \
+0 2 * * * cd ~/dev-network/beast/docker && \
   docker run --rm -v beast_prometheus-data:/data -v ~/backups:/backup \
   alpine tar czf /backup/prom-$(date +\%Y\%m\%d).tar.gz -C /data . 2>/dev/null
 

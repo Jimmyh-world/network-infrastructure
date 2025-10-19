@@ -458,7 +458,7 @@ Current setup provides:
 ### Escalation
 
 1. **Scraper unresponsive:** Check logs at `/tmp/cloudflared.log`
-2. **Tunnel down:** Restart with `pkill cloudflared && cd ~/network-infrastructure/beast && nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &`
+2. **Tunnel down:** Restart with `pkill cloudflared && cd ~/dev-network/beast && nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &`
 3. **Beast unreachable:** SSH to 192.168.68.100, check Docker: `docker compose ps`
 
 ---
@@ -503,4 +503,4 @@ curl -s https://scrape.kitt.agency/health | jq .
 
 ---
 
-*This integration guide follows the agents.md standard and is maintained in the network-infrastructure repository.*
+*This integration guide follows the agents.md standard and is maintained in the dev-network repository.*

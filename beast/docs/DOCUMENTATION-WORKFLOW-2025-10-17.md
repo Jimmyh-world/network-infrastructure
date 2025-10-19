@@ -14,7 +14,7 @@ This session accomplished:
 - Deployed ydun-scraper microservice for article extraction
 - Set up Cloudflare Tunnel for external HTTPS access (kitt.agency domain)
 - Cleaned up configuration issues (duplicate processes, unused Docker services)
-- Split dev-lab repository into focused repos (network-infrastructure is first)
+- Split dev-lab repository into focused repos (dev-network is first)
 - Created comprehensive operational documentation
 
 **Key Decision:** Repository architecture changed from monolithic dev-lab to focused repositories.
@@ -51,11 +51,11 @@ Git commit all documentation and verify on GitHub.
 
 **Step 1.1: Create architecture document**
 
-File: `/home/jimmyb/network-infrastructure/docs/REPOSITORY-ARCHITECTURE.md`
+File: `/home/jimmyb/dev-network/docs/REPOSITORY-ARCHITECTURE.md`
 
 Content should include:
 - Why we split from monolithic dev-lab
-- What goes in network-infrastructure vs other repos
+- What goes in dev-network vs other repos
 - Current repository structure
 - Planned future repositories
 - Benefits of focused repositories
@@ -63,7 +63,7 @@ Content should include:
 
 **Key points to document:**
 - dev-lab was getting too big (context overload for AI)
-- network-infrastructure: Guardian + Beast + networking only
+- dev-network: Guardian + Beast + networking only
 - ydun-scraper: Independent microservice repo
 - Future: blockchain nodes, bug bounty, other projects as separate repos
 - Each repo has own AGENTS.md, CLAUDE.md, JIMMYS-WORKFLOW.md
@@ -71,7 +71,7 @@ Content should include:
 **Step 1.2: Create repository inventory table**
 
 Document:
-- network-infrastructure (this repo)
+- dev-network (this repo)
 - dev-lab (original, now reduced scope)
 - ydun-scraper (microservice)
 - Future planned repositories
@@ -106,7 +106,7 @@ wc -l docs/REPOSITORY-ARCHITECTURE.md
 
 **Step 2.1: Create status document**
 
-File: `/home/jimmyb/network-infrastructure/beast/docs/BEAST-INFRASTRUCTURE-STATUS.md`
+File: `/home/jimmyb/dev-network/beast/docs/BEAST-INFRASTRUCTURE-STATUS.md`
 
 Content should include:
 
@@ -178,7 +178,7 @@ Beast Host (192.168.68.100)
 **Step 2.2: Add troubleshooting quick reference**
 
 Common operations:
-- Start all: `cd ~/network-infrastructure/beast/docker && docker compose up -d`
+- Start all: `cd ~/dev-network/beast/docker && docker compose up -d`
 - Stop all: `docker compose down`
 - View logs: `docker compose logs -f`
 - Restart service: `docker compose restart <service>`
@@ -222,7 +222,7 @@ grep -E "192\.168\.|kitt\.agency|localhost" beast/docs/BEAST-INFRASTRUCTURE-STAT
 
 **Step 3.1: Create session summary**
 
-File: `/home/jimmyb/network-infrastructure/docs/sessions/SESSION-2025-10-17-SUMMARY.md`
+File: `/home/jimmyb/dev-network/docs/sessions/SESSION-2025-10-17-SUMMARY.md`
 
 Content should include:
 
@@ -271,7 +271,7 @@ Haiku 4.5 YOLO mode results:
 **Section 6: Git Activity**
 
 Commits created this session:
-- network-infrastructure: 7 commits
+- dev-network: 7 commits
 - ydun-scraper: 3 commits
 - Total: 10 commits, ~2,500 lines added
 
@@ -349,7 +349,7 @@ grep -c "Issue\|Resolution" docs/sessions/SESSION-2025-10-17-SUMMARY.md
 
 **Step 4.1: Update next session file**
 
-File: `/home/jimmyb/network-infrastructure/docs/NEXT-SESSION-START-HERE.md`
+File: `/home/jimmyb/dev-network/docs/NEXT-SESSION-START-HERE.md`
 
 Content should include:
 
@@ -367,7 +367,7 @@ Before starting new work, verify infrastructure:
 
 ```bash
 # On Beast
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose ps  # All 6 services should be "Up"
 
 # Check tunnel
@@ -397,7 +397,7 @@ Expected: All return 200 OK
 - Beast SSH: ssh jimmyb@192.168.68.100
 
 **Credentials:**
-- Grafana: username `admin`, password in `~/network-infrastructure/beast/docker/.env`
+- Grafana: username `admin`, password in `~/dev-network/beast/docker/.env`
 - SSH: beast@dev-lab key configured
 - Cloudflare: credentials in `~/.cloudflared/` (gitignored)
 
@@ -406,7 +406,7 @@ Expected: All return 200 OK
 ## Repository Architecture
 
 **Current Setup:**
-- `network-infrastructure`: Guardian + Beast infrastructure (this repo)
+- `dev-network`: Guardian + Beast infrastructure (this repo)
 - `dev-lab`: General development, blockchain research, templates
 - `ydun-scraper`: Independent microservice for article extraction
 
@@ -507,7 +507,7 @@ Total: ~4,400 lines of comprehensive documentation
 4. Set up network monitoring
 5. Document Pi operations
 
-**Documentation:** See `network-infrastructure/guardian/docs/` (to be created)
+**Documentation:** See `dev-network/guardian/docs/` (to be created)
 
 **Estimated effort:** 3-4 hours
 
@@ -515,7 +515,7 @@ Total: ~4,400 lines of comprehensive documentation
 
 ## Important Reminders
 
-1. **Repository Split:** dev-lab is now focused, network-infrastructure handles Guardian + Beast
+1. **Repository Split:** dev-lab is now focused, dev-network handles Guardian + Beast
 2. **Gitignored Files:** .env files, credentials, tunnel configs are gitignored (check locally)
 3. **Cloudflared:** Runs on host, not Docker (see TUNNEL-HOST-DEPLOYMENT.md)
 4. **YAGNI Principle:** Only deploy what's needed NOW, measure before scaling
@@ -529,7 +529,7 @@ Total: ~4,400 lines of comprehensive documentation
 **Beast Infrastructure:**
 ```bash
 # Start all services
-cd ~/network-infrastructure/beast/docker && docker compose up -d
+cd ~/dev-network/beast/docker && docker compose up -d
 
 # Stop all services
 docker compose down
@@ -554,14 +554,14 @@ tail -50 /tmp/cloudflared.log
 
 # Restart tunnel
 pkill -f "cloudflared tunnel"
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
 **Git Operations:**
 ```bash
 # Pull latest
-cd ~/network-infrastructure && git pull origin main
+cd ~/dev-network && git pull origin main
 
 # Check status
 git status
@@ -636,7 +636,7 @@ grep -c "curl\|docker\|cloudflared" docs/NEXT-SESSION-START-HERE.md
 
 **Step 5.1: Create access guide**
 
-File: `/home/jimmyb/network-infrastructure/docs/ACCESS-METHODS.md`
+File: `/home/jimmyb/dev-network/docs/ACCESS-METHODS.md`
 
 Content should include:
 
@@ -653,7 +653,7 @@ Content should include:
 **Section 2: Credential Locations**
 
 Where credentials are stored:
-- Grafana admin password: `~/network-infrastructure/beast/docker/.env` (gitignored)
+- Grafana admin password: `~/dev-network/beast/docker/.env` (gitignored)
 - SSH key: `~/.ssh/` on Chromebook (beast@dev-lab)
 - Cloudflare tunnel: `~/.cloudflared/` on Beast (gitignored)
 - Cloudflare account: kitt.agency domain (free tier)
@@ -746,7 +746,7 @@ grep -c "192.168.68.100\|kitt.agency" docs/ACCESS-METHODS.md
 
 **Step 6.1: Create sessions directory**
 ```bash
-cd ~/network-infrastructure
+cd ~/dev-network
 mkdir -p docs/sessions
 ```
 
@@ -787,7 +787,7 @@ Content:
 
 Repository Architecture:
 - Documented split from monolithic dev-lab
-- network-infrastructure: Guardian + Beast only
+- dev-network: Guardian + Beast only
 - ydun-scraper: Independent microservice
 - Future repositories planned
 

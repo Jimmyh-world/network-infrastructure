@@ -23,7 +23,7 @@ Router (192.168.68.1)
 ## Repository Structure
 
 ```
-network-infrastructure/
+dev-network/
 ├── guardian/              # Guardian Pi setup and configs
 │   ├── docker/           # Docker compose files
 │   ├── configs/          # Pi-hole, WireGuard, etc.
@@ -121,7 +121,7 @@ Internet (Cloudflare)
 
 **Start tunnel:**
 ```bash
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -140,7 +140,7 @@ See `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md` for complete tunnel management 
 ### Quick Start
 
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Start all services
 docker compose up -d
@@ -157,7 +157,7 @@ docker compose down
 
 **Start tunnel (separate process):**
 ```bash
-cd ~/network-infrastructure/beast
+cd ~/dev-network/beast
 nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
 ```
 
@@ -189,7 +189,7 @@ nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.l
 ssh jimmyb@192.168.68.100
 
 # Start Claude Code session on Beast
-cd ~/network-infrastructure
+cd ~/dev-network
 claude code
 ```
 

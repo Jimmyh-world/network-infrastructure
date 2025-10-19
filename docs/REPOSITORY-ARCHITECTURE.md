@@ -43,7 +43,7 @@ This document explains the repository architecture strategy for the home lab inf
 
 | Repository | Purpose | Contents | Status |
 |------------|---------|----------|--------|
-| **network-infrastructure** | Guardian Pi + Beast infrastructure | Network configs, monitoring, Docker compose, Cloudflare Tunnel | ✅ Active (2025-10-17) |
+| **dev-network** | Guardian Pi + Beast infrastructure | Network configs, monitoring, Docker compose, Cloudflare Tunnel | ✅ Active (2025-10-17) |
 | **dev-lab** | General development workspace | Blockchain research, templates, learning materials | ✅ Active (reduced scope) |
 | **ydun-scraper** | Article extraction microservice | Python Flask service, trafilatura integration | ✅ Active (2025-10-17) |
 
@@ -61,7 +61,7 @@ This document explains the repository architecture strategy for the home lab inf
 
 ## Decision Matrix: What Goes Where?
 
-### network-infrastructure
+### dev-network
 
 **Scope:** Physical and virtual infrastructure for home lab network
 
@@ -95,7 +95,7 @@ This document explains the repository architecture strategy for the home lab inf
 - Cross-project utilities
 
 **Excludes:**
-- Production infrastructure (belongs in network-infrastructure)
+- Production infrastructure (belongs in dev-network)
 - Deployable services (belong in service-specific repos)
 - Production blockchain nodes (belong in chain-specific repos)
 
@@ -115,7 +115,7 @@ This document explains the repository architecture strategy for the home lab inf
 - Service-specific documentation
 
 **Excludes:**
-- Infrastructure deployment (belongs in network-infrastructure)
+- Infrastructure deployment (belongs in dev-network)
 - Mundus integration logic (belongs in mundus-context-engine)
 
 **Test:** "Is this code that runs *inside* the scraper service?"
@@ -135,7 +135,7 @@ This document explains the repository architecture strategy for the home lab inf
 
 **Excludes:**
 - General blockchain research (belongs in dev-lab)
-- Infrastructure deployment (belongs in network-infrastructure)
+- Infrastructure deployment (belongs in dev-network)
 
 **Test:** "Is this Cardano-specific code or configuration?"
 
@@ -155,7 +155,7 @@ This document explains the repository architecture strategy for the home lab inf
 
 **Excludes:**
 - Scraper service code (belongs in ydun-scraper)
-- Infrastructure deployment (belongs in network-infrastructure)
+- Infrastructure deployment (belongs in dev-network)
 
 **Test:** "Is this part of the Mundus application?"
 
@@ -225,13 +225,13 @@ All repositories follow these standards:
 
 ### Completed Migrations (2025-10-17)
 
-**network-infrastructure:**
+**dev-network:**
 - ✅ Created new repository
 - ✅ Added project templates (AGENTS.md, CLAUDE.md, JIMMYS-WORKFLOW.md)
 - ✅ Migrated Beast monitoring infrastructure
 - ✅ Added Cloudflare Tunnel configuration
 - ✅ Created comprehensive documentation
-- ✅ Pushed to GitHub: https://github.com/Jimmyh-world/network-infrastructure
+- ✅ Pushed to GitHub: https://github.com/Jimmyh-world/dev-network
 
 **ydun-scraper:**
 - ✅ Created new repository
@@ -264,7 +264,7 @@ All repositories follow these standards:
 ### Current Dependencies
 
 ```
-network-infrastructure (infrastructure)
+dev-network (infrastructure)
   ├── Deploys: ydun-scraper (microservice)
   └── References: dev-lab (templates)
 
@@ -284,7 +284,7 @@ dev-lab (workspace)
 - Sync templates manually when needed
 
 **Infrastructure:**
-- Deployment configs in `network-infrastructure`
+- Deployment configs in `dev-network`
 - Service code in service-specific repos
 - Reference service repos via GitHub URLs
 - Use Docker image tags for versioning
@@ -303,7 +303,7 @@ dev-lab (workspace)
 
 ### Repository URLs
 
-- https://github.com/Jimmyh-world/network-infrastructure
+- https://github.com/Jimmyh-world/dev-network
 - https://github.com/Jimmyh-world/dev-lab
 - https://github.com/Jimmyh-world/ydun-scraper
 
@@ -329,7 +329,7 @@ All repositories currently **private**.
 │   ├── docs/                   # Cross-project documentation
 │   └── [various research]
 │
-├── network-infrastructure/     # Infrastructure configs
+├── dev-network/     # Infrastructure configs
 │   ├── beast/                  # Beast server configs
 │   ├── guardian/               # Guardian Pi configs (planned)
 │   └── docs/                   # Infrastructure documentation
@@ -346,7 +346,7 @@ All repositories currently **private**.
 
 ```
 /home/jimmyb/
-├── network-infrastructure/     # Infrastructure configs (pulled from GitHub)
+├── dev-network/     # Infrastructure configs (pulled from GitHub)
 │   ├── beast/docker/          # Docker compose configs
 │   ├── beast/monitoring/      # Prometheus, Grafana configs
 │   └── beast/cloudflare/      # Tunnel configs
@@ -360,7 +360,7 @@ All repositories currently **private**.
 ## Naming Conventions
 
 ### Repository Names
-- Lowercase with hyphens: `network-infrastructure`
+- Lowercase with hyphens: `dev-network`
 - Descriptive, not abbreviated: `ydun-scraper` not `ys`
 - Singular for services: `mundus-context-engine`
 - Plural for collections: `cardano-nodes`
@@ -449,7 +449,7 @@ A: Manual sync when needed. Templates evolve slowly, so this is acceptable.
 A: Always gitignored. Document *where* they're stored, not the secrets themselves.
 
 **Q: Should infrastructure code live with application code?**
-A: No. Infrastructure deployment lives in network-infrastructure. Application code lives in app repo.
+A: No. Infrastructure deployment lives in dev-network. Application code lives in app repo.
 
 **Q: When should we create a new repository?**
 A: When a component has a clear, singular purpose and benefits from independent lifecycle.

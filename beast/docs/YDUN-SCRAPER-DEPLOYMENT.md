@@ -85,7 +85,7 @@ ls -la
 **Rollback**: `rm -rf ~/ydun-scraper`
 **Dependencies**: None (external GitHub repo)
 **Blockers**: None
-**Notes**: Independent microservice repo, not part of network-infrastructure
+**Notes**: Independent microservice repo, not part of dev-network
 
 ---
 
@@ -144,7 +144,7 @@ ls -la
   - beast/docker/docker-compose.yml
 
 🟢 **VALIDATE:**
-- Run: `cd ~/network-infrastructure/beast/docker && docker compose config` (expect: valid YAML)
+- Run: `cd ~/dev-network/beast/docker && docker compose config` (expect: valid YAML)
 - Check: ydun-scraper service defined
 - Check: Build context points to ~/ydun-scraper
 - Check: Port 8080:8080 exposed
@@ -180,9 +180,9 @@ ls -la
   - beast/docker/.env (NOT committed to git - secrets)
 
 🟢 **VALIDATE:**
-- Run: `test -f ~/network-infrastructure/beast/docker/.env && echo "✅ .env created"` (expect: file exists)
-- Run: `grep "kitt.agency" ~/network-infrastructure/beast/docker/.env` (expect: kitt.agency found)
-- Run: `grep "GF_SECURITY_ADMIN_PASSWORD" ~/network-infrastructure/beast/docker/.env` (expect: password set, not "admin123")
+- Run: `test -f ~/dev-network/beast/docker/.env && echo "✅ .env created"` (expect: file exists)
+- Run: `grep "kitt.agency" ~/dev-network/beast/docker/.env` (expect: kitt.agency found)
+- Run: `grep "GF_SECURITY_ADMIN_PASSWORD" ~/dev-network/beast/docker/.env` (expect: password set, not "admin123")
 - Run: `git status | grep ".env"` (expect: NOT listed - file is gitignored)
 - Check: .env file is gitignored (already verified in .gitignore)
 - Verify: No placeholder values remain
@@ -193,7 +193,7 @@ ls -la
 **Estimated**: 5 minutes
 **Actual**: [TBD]
 **Tests**: ✅ File created, ✅ Passwords set, ✅ Not in git
-**Rollback**: `rm ~/network-infrastructure/beast/docker/.env`
+**Rollback**: `rm ~/dev-network/beast/docker/.env`
 **Dependencies**: None
 **Blockers**: None
 **Notes**: Contains secrets - never commit to git
@@ -213,7 +213,7 @@ ls -la
 - Estimated: 10 minutes (includes image build time)
 - Commands:
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 
 # Build ydun-scraper image
 docker compose build ydun-scraper
@@ -253,7 +253,7 @@ docker compose ps
 **Tests**: ✅ All 7 containers running, ✅ Health checks passing
 **Rollback**:
 ```bash
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down
 docker volume rm beast_prometheus-data beast_grafana-data beast_portainer-data
 ```
@@ -395,10 +395,10 @@ cloudflared tunnel route delete scrape.kitt.agency
 cloudflared tunnel list | grep beast-tunnel
 
 # Verify config.yml has correct tunnel ID
-cat ~/network-infrastructure/beast/cloudflare/config.yml | grep "tunnel:"
+cat ~/dev-network/beast/cloudflare/config.yml | grep "tunnel:"
 
 # Restart cloudflared container
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose restart cloudflared
 
 # Check tunnel logs
@@ -709,7 +709,7 @@ curl -X POST https://scrape.kitt.agency/scrape \
 **Full Rollback:**
 ```bash
 # Stop all services
-cd ~/network-infrastructure/beast/docker
+cd ~/dev-network/beast/docker
 docker compose down -v
 
 # Delete tunnel
@@ -720,7 +720,7 @@ rm -rf ~/.cloudflared/
 rm -rf ~/ydun-scraper
 
 # Reset git
-cd ~/network-infrastructure
+cd ~/dev-network
 git checkout beast/
 
 # Remove .env
