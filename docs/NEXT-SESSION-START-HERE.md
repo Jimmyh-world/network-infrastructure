@@ -1,9 +1,9 @@
 # Next Session Start Here
 
 **Last Updated:** 2025-10-20
-**Last Session:** Guardian documentation updates + Tailscale evaluation
-**Session Summary:** Updated all Guardian docs to reflect actual deployment status, evaluated Tailscale for VPN mesh networking
-**Next Priority:** Deco XE75 setup + final network configuration + Tailscale deployment
+**Last Session:** Deco XE75 network setup + infrastructure migration
+**Session Summary:** Successfully deployed Deco XE75 mesh network, migrated Guardian and Beast to new network (Riverview2), verified all services operational with exceptional performance (818 Mbps fiber)
+**Next Priority:** Tailscale VPN deployment for global remote access
 
 ---
 
@@ -45,7 +45,33 @@ If any fail, see **Troubleshooting** section below.
 
 ## 🟢 Current Infrastructure Status
 
-### Deployed and Operational (as of 2025-10-20)
+### Network Setup: COMPLETE ✅ (2025-10-20)
+
+**Deco XE75 Mesh Network:**
+- ✅ SSID: Riverview2 (WPA2, WiFi 6E)
+- ✅ Subnet: 192.168.68.0/24
+- ✅ Router: 192.168.68.1 (Deco Main, basement)
+- ✅ Internet: Gigabit symmetrical fiber (818 Mbps down / 800 Mbps up)
+- ✅ Latency: 0.59ms local, ~7ms internet
+- ✅ Performance: ⭐⭐⭐⭐⭐ Production-grade
+
+**Guardian Pi (192.168.68.10):**
+- ✅ Ethernet (eth0): Primary connection, 0.59ms latency
+- ✅ WiFi (wlan0): Backup connection at .53, automatic failover
+- ✅ Pi-hole: DNS filtering active, Beast using it
+- ✅ Status: Dual-redundant, always-on
+
+**Beast (192.168.68.100):**
+- ✅ Ethernet: Gigabit fiber, 818/800 Mbps
+- ✅ All Docker services: Running perfectly
+- ✅ Cloudflare Tunnels: Both active (kitt.agency + web3studio.dev)
+- ✅ External HTTPS: All services accessible
+
+**See complete report:** `docs/DECO-XE75-SETUP-SUCCESS.md`
+
+---
+
+### Deployed and Operational Services
 
 **Monitoring Stack:**
 - ✅ Prometheus (metrics collection, 30-day retention)
@@ -230,97 +256,82 @@ https://192.168.68.100:9443      # Portainer
 
 ## 🎯 Immediate Next Steps (Choose One)
 
-### Option 1: Deco XE75 Setup + Final Network Configuration ⭐ NEXT PRIORITY
+### Option 1: Tailscale VPN Deployment ⭐ NEXT PRIORITY
 
-**Goal:** Set up Deco XE75 mesh router and complete network infrastructure with Tailscale VPN
+**Goal:** Deploy Tailscale VPN mesh networking for global remote access
 
-**Why:** Foundation for all other work - proper network + remote access enables everything else
+**Why:** Network setup complete! Now add secure remote access from anywhere (coffee shop, phone, office)
 
-**Hardware Needed:**
-- TP-Link Deco XE75 mesh system (arriving soon)
-- Network cables (Cat 6 for Beast, Cat 5 backhaul to office)
-- Guardian Pi 5 ✅ (already deployed at 192.168.68.10)
+**Prerequisites:**
+- ✅ Deco XE75 network operational (Riverview2)
+- ✅ Guardian at 192.168.68.10
+- ✅ Beast at 192.168.68.100
+- ✅ All services running
 
-**Phase 1: Deco XE75 Physical Setup (30 min)**
-1. Unbox Deco XE75 units (3-pack: Main, Office, Living Room)
-2. Connect Main unit to fiber input (basement)
-3. Connect Beast via Cat 6 to Main unit
-4. Set up Office unit with Cat 5 backhaul
-5. Connect Guardian Pi via Cat 6 to Office unit
-6. Set up Living Room unit (wireless backhaul)
+**Phase 1: Install Tailscale on Machines (15 min)**
 
-**Phase 2: Deco Network Configuration (30 min)**
-1. Install Deco app on phone
-2. Configure main Deco (basement unit)
-3. Set network name and password (WPA3)
-4. Configure static IPs:
-   - Beast: 192.168.68.100 (reserve DHCP)
-   - Guardian: 192.168.68.10 (reserve DHCP)
-5. Set up IoT network (separate SSID) - optional
-6. Configure DNS to point to Guardian Pi-hole (192.168.68.10)
-7. Disable Deco ad blocking (use Pi-hole instead)
-
-**Phase 3: Tailscale VPN Deployment (30 min)**
-1. Install Tailscale on Chromebook:
+1. **On Chromebook (Debian container):**
    ```bash
    curl -fsSL https://tailscale.com/install.sh | sh
    sudo tailscale up
    ```
 
-2. Install Tailscale on Beast:
+2. **On Beast:**
    ```bash
    ssh jimmyb@192.168.68.100
    curl -fsSL https://tailscale.com/install.sh | sh
    sudo tailscale up --ssh
    ```
 
-3. Install Tailscale on Guardian:
+3. **On Guardian:**
    ```bash
    ssh jamesb@192.168.68.10
    curl -fsSL https://tailscale.com/install.sh | sh
    sudo tailscale up --advertise-routes=192.168.68.0/24 --accept-routes --ssh
    ```
 
-4. Approve subnet route in Tailscale admin console
-5. Test connectivity: `ssh beast` from anywhere
+**Phase 2: Configure Subnet Routing (5 min)**
 
-**Phase 4: Mobile Setup (15 min)**
+1. Log into Tailscale admin console: https://login.tailscale.com/
+2. Go to Machines → guardian
+3. Edit route settings
+4. Approve subnet route: 192.168.68.0/24
+5. Test: `ssh beast` from anywhere (no IP needed!)
+
+**Phase 3: Mobile Setup (10 min)**
 1. Install Tailscale app on phone (iOS/Android)
 2. Install Termius SSH client
 3. Test SSH from phone: `ssh beast`
 4. Test accessing services: `http://beast:3000` (Grafana)
 
-**Phase 5: Validation (15 min)**
-1. Test mesh WiFi coverage (all areas of house)
-2. Test wired backhaul (Office unit)
-3. Test Tailscale from coffee shop WiFi
-4. Test mobile SSH access
-5. Verify Pi-hole DNS working on all devices
-6. Document any issues
+**Phase 4: Validation (10 min)**
+1. Test Tailscale from coffee shop WiFi: `ssh beast`
+2. Test mobile SSH access from phone
+3. Access internal services: `http://beast:3000` (Grafana)
+4. Verify MagicDNS working (no IP addresses needed!)
+5. Test subnet routing (access ANY device on 192.168.68.0/24)
 
-**Total Time:** ~2 hours
+**Total Time:** ~40 minutes
 
 **What You'll Have:**
-- ✅ Professional mesh WiFi (WiFi 6E) throughout house
-- ✅ Wired backhaul for reliability
-- ✅ Guardian Pi as network DNS (Pi-hole blocking)
-- ✅ Tailscale VPN mesh (access from anywhere)
-- ✅ Mobile SSH access to Beast/Guardian
-- ✅ MagicDNS (`ssh beast` instead of IPs)
-- ✅ Subnet routing (access entire home network remotely)
+- ✅ SSH to Beast/Guardian from anywhere (`ssh beast` - no IPs!)
+- ✅ Access internal services remotely (Grafana, Prometheus, Pi-hole)
+- ✅ Mobile SSH from phone (check logs, restart services on the go)
+- ✅ MagicDNS (human-readable hostnames, not IP addresses)
+- ✅ Subnet routing (access ENTIRE home network remotely)
+- ✅ Zero-config VPN mesh (works on any WiFi, cellular, anywhere)
 
 **Documentation:**
-- `docs/TAILSCALE-EVALUATION.md` - Complete Tailscale guide (just created!)
+- `docs/TAILSCALE-EVALUATION.md` - Complete evaluation and comparison
 - `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md` - Guardian architecture
-- `~/dev-guardian/docs/GUARDIAN-SETUP.md` - Guardian setup procedures
 
 **Benefits:**
 - Remote development from anywhere (coffee shop, office, traveling)
 - Three-machine coordination works globally
-- SSH from phone (check logs, restart services on the go)
-- Foundation for Guardian Tier 2 deployment
+- Monitor and manage infrastructure from phone
+- Foundation for Guardian Tier 2 deployment (always-on intelligence)
 
-**Status:** Fully planned, ready to execute when Deco arrives
+**Status:** Fully planned and evaluated, ready to deploy
 
 ---
 
