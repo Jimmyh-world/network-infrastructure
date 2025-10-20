@@ -1,70 +1,26 @@
-# Mundus Editor Platform - Docker Compose Configuration
-# Beast Staging Deployment
-# Domain: mundus.web3studio.dev
-# Created: 2025-10-20
-
 version: '3.8'
 
 networks:
   mundus:
     driver: bridge
 
-# PLACEHOLDER: Services will be added as they are deployed
-# Current stage: Awaiting hello-world-test service
-
 services:
-  # Stage 1: hello-world-test (Tracer Bullet)
-  # Uncomment when ready to deploy
-  #
-  # hello-world:
-  #   build:
-  #     context: /home/jimmyb/m-e-p
-  #     dockerfile: docker/services/hello-world-test.Dockerfile
-  #   container_name: mundus-hello-world
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8081:80"  # Matches Cloudflare Tunnel config
-  #   networks:
-  #     - mundus
-
-  # Stage 2: Full Services (After Tracer Bullet Success)
-  #
-  # backend:
-  #   build:
-  #     context: /home/jimmyb/m-e-p
-  #     dockerfile: docker/services/backend.Dockerfile
-  #   container_name: mundus-backend
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3001:3001"
-  #   environment:
-  #     - DATABASE_URL=${DATABASE_URL}
-  #     - PORT=3001
-  #     - NODE_ENV=production
-  #   networks:
-  #     - mundus
-  #
-  # editor-frontend:
-  #   build:
-  #     context: /home/jimmyb/m-e-p
-  #     dockerfile: docker/services/editor-frontend.Dockerfile
-  #   container_name: mundus-editor
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8082:80"
-  #   networks:
-  #     - mundus
-  #
-  # digest-frontend:
-  #   build:
-  #     context: /home/jimmyb/m-e-p
-  #     dockerfile: docker/services/digest-frontend.Dockerfile
-  #   container_name: mundus-digest
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8083:80"
-  #   networks:
-  #     - mundus
-
-# NOTE: This file will be progressively updated as services are deployed
-# See: beast/docs/MUNDUS-DEPLOYMENT-SPEC.md for deployment instructions
+  hello-world:
+    build:
+      context: /home/jimmyb/Mundus-editor-application/services/hello-world-fullstack
+      dockerfile: ../../docker/services/hello-world-fullstack.Dockerfile
+    container_name: mundus-hello-world
+    restart: unless-stopped
+    ports:
+      - "8081:3000"  # Port 8081 external (Cloudflare), 3000 internal (Express)
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mundus
