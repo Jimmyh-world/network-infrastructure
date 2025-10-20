@@ -1,8 +1,9 @@
 # Next Session Start Here
 
 **Last Updated:** 2025-10-20
-**Last Session:** Mundus tracer bullet deployment + Stage 1 completion + optimization planning
-**Session Summary:** Stage 1 COMPLETE - Pipeline validated from GitHub → Beast → Cloudflare → Internet
+**Last Session:** Guardian documentation updates + Tailscale evaluation
+**Session Summary:** Updated all Guardian docs to reflect actual deployment status, evaluated Tailscale for VPN mesh networking
+**Next Priority:** Deco XE75 setup + final network configuration + Tailscale deployment
 
 ---
 
@@ -229,7 +230,101 @@ https://192.168.68.100:9443      # Portainer
 
 ## 🎯 Immediate Next Steps (Choose One)
 
-### Option 1: Infrastructure Optimizations ⭐ RECOMMENDED
+### Option 1: Deco XE75 Setup + Final Network Configuration ⭐ NEXT PRIORITY
+
+**Goal:** Set up Deco XE75 mesh router and complete network infrastructure with Tailscale VPN
+
+**Why:** Foundation for all other work - proper network + remote access enables everything else
+
+**Hardware Needed:**
+- TP-Link Deco XE75 mesh system (arriving soon)
+- Network cables (Cat 6 for Beast, Cat 5 backhaul to office)
+- Guardian Pi 5 ✅ (already deployed at 192.168.68.10)
+
+**Phase 1: Deco XE75 Physical Setup (30 min)**
+1. Unbox Deco XE75 units (3-pack: Main, Office, Living Room)
+2. Connect Main unit to fiber input (basement)
+3. Connect Beast via Cat 6 to Main unit
+4. Set up Office unit with Cat 5 backhaul
+5. Connect Guardian Pi via Cat 6 to Office unit
+6. Set up Living Room unit (wireless backhaul)
+
+**Phase 2: Deco Network Configuration (30 min)**
+1. Install Deco app on phone
+2. Configure main Deco (basement unit)
+3. Set network name and password (WPA3)
+4. Configure static IPs:
+   - Beast: 192.168.68.100 (reserve DHCP)
+   - Guardian: 192.168.68.10 (reserve DHCP)
+5. Set up IoT network (separate SSID) - optional
+6. Configure DNS to point to Guardian Pi-hole (192.168.68.10)
+7. Disable Deco ad blocking (use Pi-hole instead)
+
+**Phase 3: Tailscale VPN Deployment (30 min)**
+1. Install Tailscale on Chromebook:
+   ```bash
+   curl -fsSL https://tailscale.com/install.sh | sh
+   sudo tailscale up
+   ```
+
+2. Install Tailscale on Beast:
+   ```bash
+   ssh jimmyb@192.168.68.100
+   curl -fsSL https://tailscale.com/install.sh | sh
+   sudo tailscale up --ssh
+   ```
+
+3. Install Tailscale on Guardian:
+   ```bash
+   ssh jamesb@192.168.68.10
+   curl -fsSL https://tailscale.com/install.sh | sh
+   sudo tailscale up --advertise-routes=192.168.68.0/24 --accept-routes --ssh
+   ```
+
+4. Approve subnet route in Tailscale admin console
+5. Test connectivity: `ssh beast` from anywhere
+
+**Phase 4: Mobile Setup (15 min)**
+1. Install Tailscale app on phone (iOS/Android)
+2. Install Termius SSH client
+3. Test SSH from phone: `ssh beast`
+4. Test accessing services: `http://beast:3000` (Grafana)
+
+**Phase 5: Validation (15 min)**
+1. Test mesh WiFi coverage (all areas of house)
+2. Test wired backhaul (Office unit)
+3. Test Tailscale from coffee shop WiFi
+4. Test mobile SSH access
+5. Verify Pi-hole DNS working on all devices
+6. Document any issues
+
+**Total Time:** ~2 hours
+
+**What You'll Have:**
+- ✅ Professional mesh WiFi (WiFi 6E) throughout house
+- ✅ Wired backhaul for reliability
+- ✅ Guardian Pi as network DNS (Pi-hole blocking)
+- ✅ Tailscale VPN mesh (access from anywhere)
+- ✅ Mobile SSH access to Beast/Guardian
+- ✅ MagicDNS (`ssh beast` instead of IPs)
+- ✅ Subnet routing (access entire home network remotely)
+
+**Documentation:**
+- `docs/TAILSCALE-EVALUATION.md` - Complete Tailscale guide (just created!)
+- `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md` - Guardian architecture
+- `~/dev-guardian/docs/GUARDIAN-SETUP.md` - Guardian setup procedures
+
+**Benefits:**
+- Remote development from anywhere (coffee shop, office, traveling)
+- Three-machine coordination works globally
+- SSH from phone (check logs, restart services on the go)
+- Foundation for Guardian Tier 2 deployment
+
+**Status:** Fully planned, ready to execute when Deco arrives
+
+---
+
+### Option 2: Infrastructure Optimizations
 
 **Goal:** Make current infrastructure production-ready with automation and monitoring
 
@@ -260,7 +355,7 @@ https://192.168.68.100:9443      # Portainer
 
 ---
 
-### Option 2: Stage 2 - Full Service Deployment ⭐ HIGH PRIORITY
+### Option 3: Stage 2 - Full Service Deployment ⭐ HIGH PRIORITY
 
 **Goal:** Deploy real Mundus services (backend, frontends) to Beast
 
@@ -298,7 +393,7 @@ https://192.168.68.100:9443      # Portainer
 
 ---
 
-### Option 3: Guardian Pi Tier 1 Completion
+### Option 4: Guardian Pi Tier 1 Completion
 
 **Goal:** Complete Guardian Tier 1 Core Security deployment
 
@@ -335,7 +430,7 @@ https://192.168.68.100:9443      # Portainer
 
 ---
 
-### Option 4: Mundus Integration Testing
+### Option 5: Mundus Integration Testing
 
 **Goal:** Test live Mundus service with real workflows
 
@@ -623,10 +718,11 @@ curl http://192.168.68.100:8200/v1/sys/health | jq .sealed
 - Test all endpoints
 
 **Step 2: Choose Path** (1 min)
-- Option 1: Infrastructure optimizations (90 min, production-ready)
-- Option 2: Stage 2 deployment (3-4 hours, full services)
-- Option 3: Guardian Pi setup (if hardware arrived)
-- Option 4: Mundus testing (1-2 hours, client feedback)
+- Option 1: **Deco XE75 + Network Setup** (2 hours, foundation for everything) ⭐ NEXT PRIORITY
+- Option 2: Infrastructure optimizations (90 min, production-ready)
+- Option 3: Stage 2 deployment (3-4 hours, full services)
+- Option 4: Guardian Pi Tier 1 completion (3-4 hours)
+- Option 5: Mundus testing (1-2 hours, client feedback)
 
 **Step 3: Execute** (variable)
 - Follow Jimmy's Workflow (RED/GREEN/CHECKPOINT)
@@ -651,13 +747,14 @@ curl http://192.168.68.100:8200/v1/sys/health | jq .sealed
 - ✅ Ready for Stage 2 or optimizations
 
 **Next Milestone Options:**
+- **Network Setup Complete:** Deco XE75 deployed, Tailscale VPN mesh active, mobile access working
 - **Optimization Complete:** Auto-deploy working, monitoring configured
 - **Stage 2 Complete:** All services deployed, integrated, tested
-- **Guardian Complete:** Pi operational, network secured
+- **Guardian Tier 1 Complete:** Full security stack operational (Pi-hole, Suricata, ntopng, monitoring, Tailscale)
 
 ---
 
 **This document is updated at the end of each session.**
 
 **Last Updated:** 2025-10-20
-**Next Session:** Choose Option 1 (Optimizations) or Option 2 (Stage 2 Deployment)
+**Next Session:** Option 1 - Deco XE75 Setup + Final Network Configuration (when hardware arrives)

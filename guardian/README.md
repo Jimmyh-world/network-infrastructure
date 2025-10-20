@@ -51,7 +51,10 @@ dev-network/guardian/ → Deployment, configs, runtime (Guardian Pi 5)
 - Suricata (IDS, deep packet inspection)
 - ntopng (traffic monitoring)
 - Grafana/Prometheus (monitoring dashboards)
+- Tailscale (VPN mesh networking) ⭐ Chosen over WireGuard
 - Alert system
+
+**VPN Decision (2025-10-20):** Using **Tailscale** instead of WireGuard for VPN mesh networking. See `docs/TAILSCALE-EVALUATION.md` for rationale.
 
 **Complete Architecture:** See `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md`
 
