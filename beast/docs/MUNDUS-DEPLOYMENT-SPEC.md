@@ -2,7 +2,7 @@
 
 **Created**: 2025-10-20
 **Machine**: Beast (192.168.68.100)
-**Repository**: https://github.com/Jimmyh-world/m-e-p
+**Repository**: https://github.com/ydun-code-library/Mundus-editor-application
 **Branch**: main
 **Domain**: mundus.web3studio.dev
 **Purpose**: Staging deployment for Mundus Editor Platform
@@ -77,11 +77,11 @@ This specification guides Beast in deploying Mundus Editor Platform services fro
 # Navigate to home directory
 cd ~
 
-# Clone m-e-p monorepo
-git clone https://github.com/Jimmyh-world/m-e-p.git
+# Clone Mundus monorepo
+git clone https://github.com/ydun-code-library/Mundus-editor-application.git
 
 # Navigate into repo
-cd m-e-p
+cd Mundus-editor-application
 
 # Verify main branch
 git branch
@@ -95,31 +95,32 @@ ls -la
 **Validation:**
 ```bash
 # Verify repository cloned
-test -d ~/m-e-p && echo "✅ Repository cloned"
+test -d ~/Mundus-editor-application && echo "✅ Repository cloned"
 
 # Verify services directory exists
-test -d ~/m-e-p/services && echo "✅ Services directory present"
+test -d ~/Mundus-editor-application/services && echo "✅ Services directory present"
 
 # Verify docker directory exists
-test -d ~/m-e-p/docker && echo "✅ Docker configs present"
+test -d ~/Mundus-editor-application/docker && echo "✅ Docker configs present"
 ```
 
 ---
 
 ## Phase 2: Deploy hello-world-test (Tracer Bullet)
 
-### Step 2.1: Verify hello-world-test Service Exists
+### Step 2.1: Verify hello-world Services Exist
 
 ```bash
-cd ~/m-e-p
+cd ~/Mundus-editor-application
 
-# Check hello-world service
-ls -la services/hello-world-test/
-# Expected: index.html or app.js, package.json (depends on implementation)
+# Check hello-world services (2 available)
+ls -la services/hello-world-test/        # Backend only
+ls -la services/hello-world-fullstack/   # Full-stack React + Express
+# Expected: server.js, package.json, README.md
 
-# Check Dockerfile
+# Check Dockerfiles
 ls -la docker/services/ | grep hello
-# Expected: hello-world-test.Dockerfile or similar
+# Expected: hello-world-test.Dockerfile, hello-world-fullstack.Dockerfile
 ```
 
 ### Step 2.2: Create Docker Compose Configuration
@@ -134,7 +135,7 @@ mkdir -p ~/dev-network/beast/docker/mundus
 nano ~/dev-network/beast/docker/mundus/docker-compose.yml
 ```
 
-**Configuration example:**
+**Configuration example (use hello-world-fullstack for full React experience):**
 ```yaml
 version: '3.8'
 
@@ -145,12 +146,12 @@ networks:
 services:
   hello-world:
     build:
-      context: /home/jimmyb/m-e-p
-      dockerfile: docker/services/hello-world-test.Dockerfile
+      context: /home/jimmyb/Mundus-editor-application
+      dockerfile: docker/services/hello-world-fullstack.Dockerfile
     container_name: mundus-hello-world
     restart: unless-stopped
     ports:
-      - "8081:80"  # Port 8081 matches Cloudflare Tunnel config
+      - "8081:3000"  # Port 8081 matches Cloudflare Tunnel config
     networks:
       - mundus
 ```
@@ -278,7 +279,7 @@ networks:
 services:
   backend:
     build:
-      context: /home/jimmyb/m-e-p
+      context: /home/jimmyb/Mundus-editor-application
       dockerfile: docker/services/backend.Dockerfile
     container_name: mundus-backend
     restart: unless-stopped
@@ -293,7 +294,7 @@ services:
 
   editor-frontend:
     build:
-      context: /home/jimmyb/m-e-p
+      context: /home/jimmyb/Mundus-editor-application
       dockerfile: docker/services/editor-frontend.Dockerfile
     container_name: mundus-editor
     restart: unless-stopped
@@ -304,7 +305,7 @@ services:
 
   digest-frontend:
     build:
-      context: /home/jimmyb/m-e-p
+      context: /home/jimmyb/Mundus-editor-application
       dockerfile: docker/services/digest-frontend.Dockerfile
     container_name: mundus-digest
     restart: unless-stopped
@@ -388,11 +389,11 @@ nohup cloudflared tunnel --config cloudflare/config-web3studio.yml run > /tmp/cl
 
 ## Updating Deployment (Git Pull)
 
-**When m-e-p repository is updated:**
+**When Mundus repository is updated:**
 
 ```bash
 # Pull latest changes
-cd ~/m-e-p
+cd ~/Mundus-editor-application
 git pull origin main
 
 # Rebuild affected services
@@ -513,7 +514,7 @@ docker images | grep mundus
 docker rmi [IMAGE_IDs]
 
 # Clean up repository (optional)
-rm -rf ~/m-e-p
+rm -rf ~/Mundus-editor-application
 ```
 
 ### Keep Infrastructure, Remove Services Only
@@ -573,10 +574,10 @@ docker compose rm hello-world
 ---
 
 **Document Status**: Ready for Beast Execution
-**Current Stage**: Awaiting m-e-p repository with hello-world-test service
+**Current Stage**: Repository ready with 2 hello-world services
 **Dependencies**:
-- MUNDUS-TUNNEL-SETUP.md (tunnel must be configured first)
-- m-e-p/main branch with hello-world-test service
+- MUNDUS-TUNNEL-SETUP.md (✅ tunnel configured and running)
+- Mundus-editor-application/main branch (✅ services ready)
 
 ---
 

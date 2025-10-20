@@ -272,9 +272,9 @@ ssh pi@192.168.68.x
 
 **Beast Deployment:**
 - Location: `beast/docker/mundus/`
-- Services: hello-world-test (tracer bullet), then full monorepo
-- Repository: https://github.com/Jimmyh-world/m-e-p (main branch)
-- Status: ⚪ Infrastructure Ready (awaiting m-e-p repository with hello-world service)
+- Services: hello-world-fullstack (tracer bullet), then full monorepo
+- Repository: https://github.com/ydun-code-library/Mundus-editor-application (main branch)
+- Status: ✅ Repository Ready (2 hello-world services available for deployment)
 
 ### Deployment Stages
 
@@ -320,7 +320,7 @@ cloudflared tunnel route dns mundus-tunnel mundus.web3studio.dev
 ```bash
 # See: beast/docs/MUNDUS-DEPLOYMENT-SPEC.md
 cd ~
-git clone https://github.com/Jimmyh-world/m-e-p.git
+git clone https://github.com/ydun-code-library/Mundus-editor-application.git
 cd ~/dev-network/beast/docker/mundus
 docker compose up -d
 ```
