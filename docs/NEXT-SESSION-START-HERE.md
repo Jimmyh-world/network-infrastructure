@@ -1,8 +1,8 @@
 # Next Session Start Here
 
-**Last Updated:** 2025-10-17
-**Last Session:** Beast monitoring infrastructure + ydun-scraper deployment + repository architecture
-**Session Summary:** `docs/sessions/SESSION-2025-10-17-SUMMARY.md`
+**Last Updated:** 2025-10-20
+**Last Session:** Mundus tracer bullet deployment + Stage 1 completion + optimization planning
+**Session Summary:** Stage 1 COMPLETE - Pipeline validated from GitHub → Beast → Cloudflare → Internet
 
 ---
 
@@ -14,17 +14,26 @@ Before starting new work, verify infrastructure is healthy:
 # SSH to Beast
 ssh jimmyb@192.168.68.100
 
-# Check Docker services (should see 6 containers "Up (healthy)")
+# Check Docker services (should see 7 containers "Up (healthy)")
 cd ~/dev-network/beast/docker
 docker compose ps
+cd ~/dev-network/beast/docker/mundus
+docker compose ps
 
-# Check Cloudflare Tunnel (should see exactly 1 process)
+# Check Cloudflare Tunnels (should see 2 processes)
 ps aux | grep "cloudflared tunnel" | grep -v grep
 
 # Test internal endpoints (all should return 200 OK)
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/health  # Grafana
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5000/health      # Scraper
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:9090/-/healthy   # Prometheus
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8200/v1/sys/health  # Vault
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/health  # Mundus hello-world
+
+# Test external HTTPS access
+curl -s -o /dev/null -w "%{http_code}\n" https://grafana.kitt.agency/api/health
+curl -s -o /dev/null -w "%{http_code}\n" https://scrape.kitt.agency/health
+curl -s -o /dev/null -w "%{http_code}\n" https://mundus.web3studio.dev/api/health
 ```
 
 **Expected:** All checks pass ✅
@@ -35,7 +44,7 @@ If any fail, see **Troubleshooting** section below.
 
 ## 🟢 Current Infrastructure Status
 
-### Deployed and Operational (as of 2025-10-17)
+### Deployed and Operational (as of 2025-10-20)
 
 **Monitoring Stack:**
 - ✅ Prometheus (metrics collection, 30-day retention)
@@ -45,24 +54,108 @@ If any fail, see **Troubleshooting** section below.
 
 **Management:**
 - ✅ Portainer (container GUI at https://192.168.68.100:9443)
+- ✅ HashiCorp Vault (secret management at http://192.168.68.100:8200)
 
 **Microservices:**
 - ✅ ydun-scraper (article extraction at https://scrape.kitt.agency)
   - Performance: 2.1 URLs/second
   - Status: Production-ready
+- ✅ **mundus-hello-world** (tracer bullet at https://mundus.web3studio.dev) ⭐ NEW
+  - Stack: React 18 + SASS + Express
+  - Container: 135MB (multi-stage build)
+  - Status: Operational, 0.02% memory usage
 
 **External Access:**
 - ✅ Cloudflare Tunnel (kitt.agency domain)
   - 4 edge connections active
   - HTTPS encryption
+  - Routes: grafana, scrape, portainer
+- ✅ Cloudflare Tunnel (web3studio.dev domain) ⭐ NEW
+  - Tunnel: mundus-tunnel (87b661c8-75f9-4113-abf6-f02125a4aaa4)
+  - 4 edge connections active
+  - Route: mundus.web3studio.dev
 
-**Complete status:** `beast/docs/BEAST-INFRASTRUCTURE-STATUS.md`
+**Complete status:**
+- `beast/docs/BEAST-INFRASTRUCTURE-STATUS.md`
+- `beast/docs/MUNDUS-DEPLOYMENT-SUCCESS.md` (435 lines, tracer bullet report)
+
+---
+
+## 🎉 Stage 1 Complete - Tracer Bullet Success!
+
+**What Was Accomplished (2025-10-20):**
+
+### Pipeline Validated End-to-End ✅
+
+```
+Chromebook (Orchestrator)
+  ↓ Created specs, designed architecture
+
+GitHub
+  ↓ Single source of truth
+  ↓ Repos: dev-network, Mundus-editor-application
+
+Beast (Builder/Executor)
+  ↓ Cloned repos, built Docker images
+  ↓ Deployed containers
+  ↓ Documented everything
+
+Cloudflare Tunnel
+  ↓ Secured external access
+
+Public Internet
+  ✅ https://mundus.web3studio.dev LIVE!
+```
+
+### Three-Machine Architecture Working ✅
+
+- **Chromebook:** Planning, specs, coordination
+- **Beast:** Building, deploying, documenting
+- **GitHub:** Synchronization across machines
+
+### Issues Solved (3 major)
+
+1. **Dockerfile build failure** - Missing vite.config.js in build context
+2. **Duplicate tunnel processes** - Process management cleanup
+3. **DNS routing confusion** - Clarified local config vs dashboard
+
+### Key Learnings Documented
+
+1. Locally-configured tunnels > Dashboard-managed (version control!)
+2. Multi-stage Docker builds = 70% smaller images
+3. Two Cloudflare dashboards (Regular DNS vs Zero Trust)
+4. Beast is MUCH faster for Docker builds than Chromebook (2 min vs 10-15 min)
+
+### Documentation Created
+
+- **MUNDUS-DEPLOYMENT-SUCCESS.md** (435 lines)
+  - Complete timeline
+  - RED→GREEN→CHECKPOINT workflow
+  - Issues and solutions
+  - Rollback procedures
+  - Performance metrics
 
 ---
 
 ## 🔑 Access Methods
 
-### From Chromebook Browser
+### Mundus Staging Environment (NEW)
+
+**External HTTPS:**
+```
+https://mundus.web3studio.dev           # Beautiful React UI
+https://mundus.web3studio.dev/api/health    # Health check
+```
+
+**Features:**
+- Animated gradient backgrounds
+- Wave animations
+- Tech stack badges
+- Visitor counter
+- Message board API
+- Fully responsive
+
+### Existing Services
 
 **External HTTPS (works from anywhere):**
 ```
@@ -71,10 +164,12 @@ https://scrape.kitt.agency/health    # Scraper health check
 https://scrape.kitt.agency/scrape    # Scraper API
 ```
 
-**Local Network (faster, no tunnel dependency):**
+**Local Network:**
 ```
 http://192.168.68.100:3000       # Grafana
 http://192.168.68.100:5000       # Scraper
+http://192.168.68.100:8081       # Mundus hello-world
+http://192.168.68.100:8200       # Vault API/UI
 http://192.168.68.100:9090       # Prometheus
 https://192.168.68.100:9443      # Portainer
 ```
@@ -83,7 +178,11 @@ https://192.168.68.100:9443      # Portainer
 
 **Grafana:**
 - Username: `admin`
-- Password: `cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD` (on Beast)
+- Password: `cat ~/dev-network/beast/docker/.env | grep GF_SECURITY_ADMIN_PASSWORD`
+
+**Vault:**
+- UI: http://192.168.68.100:8200/ui
+- Tokens: See `~/dev-vault/VAULT-USAGE-GUIDE.md`
 
 **Portainer:**
 - Set password on first access
@@ -91,418 +190,390 @@ https://192.168.68.100:9443      # Portainer
 
 **Beast SSH:**
 - Command: `ssh jimmyb@192.168.68.100`
-- Key: beast@dev-lab (already configured)
-
-**Complete access guide:** `docs/ACCESS-METHODS.md`
 
 ---
 
 ## 📁 Repository Architecture
 
-### Current Repositories
+### Active Repositories
 
 **dev-network** (this repo)
-- **Purpose:** Guardian Pi + Beast infrastructure
-- **Contains:** Docker configs, monitoring setup, Cloudflare Tunnel
-- **URL:** https://github.com/Jimmyh-world/dev-network
+- **Purpose:** Network infrastructure (Guardian Pi + Beast)
+- **Contains:** Docker configs, monitoring, Cloudflare Tunnels, deployment specs
+- **URL:** https://github.com/Jimmyh-world/network-infrastructure
+
+**Mundus-editor-application**
+- **Purpose:** Mundus Editor Platform monorepo
+- **Contains:** Services (backend, frontends, hello-world), Docker configs
+- **URL:** https://github.com/ydun-code-library/Mundus-editor-application
+- **Status:** Phase 2 complete (tracer bullet deployed)
+
+**dev-vault**
+- **Purpose:** Secret management infrastructure
+- **Contains:** Vault deployment configs, policies, usage guides
+- **URL:** https://github.com/Jimmyh-world/dev-vault
+- **Status:** Operational on Beast (port 8200)
 
 **dev-lab**
 - **Purpose:** General development workspace
-- **Contains:** Blockchain research, project templates, learning materials
+- **Contains:** Blockchain research, templates, learning materials
 - **URL:** https://github.com/Jimmyh-world/dev-lab
 
 **ydun-scraper**
 - **Purpose:** Article extraction microservice
 - **Contains:** Python Flask service, trafilatura integration
 - **URL:** https://github.com/Jimmyh-world/ydun-scraper
-
-**Why we split:** dev-lab was getting too big, causing AI context confusion. Each repo now has single, clear purpose.
-
-**Complete architecture:** `docs/REPOSITORY-ARCHITECTURE.md`
-
----
-
-## 📊 What Was Accomplished Last Session
-
-**Infrastructure Deployed:**
-1. Complete monitoring stack (Prometheus, Grafana, Node Exporter, cAdvisor)
-2. Container management (Portainer)
-3. Article scraper microservice (ydun-scraper)
-4. External HTTPS access (Cloudflare Tunnel on kitt.agency)
-
-**Configuration Cleanup:**
-1. Removed unused cloudflared Docker service (runs on host)
-2. Fixed tilde paths to absolute paths
-3. Created .env with secure Grafana password
-4. Killed duplicate cloudflared processes (3 → 1)
-
-**Repository Architecture:**
-1. Split dev-lab into focused repositories
-2. Created dev-network (this repo)
-3. Created ydun-scraper microservice repo
-4. Documented repository split strategy
-
-**Documentation Created:**
-1. 7,000+ lines of comprehensive documentation
-2. Complete infrastructure setup workflows
-3. Operational runbooks and validation procedures
-4. Rollback and recovery procedures
-5. Repository architecture guide
-6. Session historical summary
-
-**Git Activity:**
-- 10 commits across 2 repositories
-- All following Jimmy's Workflow (RED/GREEN/CHECKPOINT)
-- Complete operational documentation
-
-**Autonomous Agent Performance:**
-- Haiku 4.5 executed 2 major workflows autonomously
-- Created 11 commits in first run, 5 in second
-- A-grade execution of Jimmy's Workflow
-- Minor issues (port config) self-corrected
-
-**Complete summary:** `docs/sessions/SESSION-2025-10-17-SUMMARY.md`
+- **Status:** Production-ready (https://scrape.kitt.agency)
 
 ---
 
 ## 🎯 Immediate Next Steps (Choose One)
 
-### Option 1: Mundus Integration ⭐ HIGH PRIORITY
+### Option 1: Infrastructure Optimizations ⭐ RECOMMENDED
 
-**Goal:** Connect ydun-scraper to Mundus Supabase edge function for article extraction pipeline
+**Goal:** Make current infrastructure production-ready with automation and monitoring
 
-**Why:** Scraper is deployed and working, Mundus is waiting for it
+**Why:** Stage 1 works, but needs reliability improvements before Stage 2
 
-**Tasks:**
-1. Create Supabase edge function to call https://scrape.kitt.agency/scrape
-2. Test end-to-end article extraction
-3. Set up Mundus database schema for articles
-4. Implement batch processing (5-10 URLs at a time)
-5. Add error handling and retry logic
+**Planned Optimizations:**
 
-**Documentation:** `beast/docs/MUNDUS-INTEGRATION.md` (506 lines, complete guide)
+| Priority | Task | Time | Benefit |
+|----------|------|------|---------|
+| **1** | systemd for Cloudflare Tunnel | 15 min | Auto-restart, survives reboot |
+| **2** | Webhook auto-deploy (with Vault) | 45 min | Push → instant deploy (~2 min) |
+| **3** | Container monitoring | 30 min | Visibility, catch issues early |
+| **4** | Log aggregation (Loki) | 45 min | Multi-service debugging |
 
-**Estimated Effort:** 2-3 hours
+**Total for 1-3: ~90 minutes**
 
-**Starting Point:**
-```typescript
-// Deno edge function example (from MUNDUS-INTEGRATION.md)
-const scraperUrl = "https://scrape.kitt.agency/scrape";
-const response = await fetch(scraperUrl, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ urls: ["https://example.com/article"] })
-});
-```
+**What You'll Have:**
+- ✅ Tunnel auto-restarts on crash or reboot
+- ✅ Push to GitHub → Beast auto-deploys
+- ✅ Grafana dashboards for all containers
+- ✅ Secrets managed via Vault (no .env files)
 
----
+**Documentation:**
+- `docs/OPTIMIZATION-PLAN.md` (complete specs)
+- `docs/WEBHOOK-VAULT-INTEGRATION.md` (implementation guide)
 
-### Option 2: Grafana Dashboards ⭐ HIGH PRIORITY
-
-**Goal:** Configure monitoring dashboards for Beast infrastructure
-
-**Why:** Monitoring is deployed but dashboards not yet configured
-
-**Tasks:**
-1. Import Beast system dashboard (CPU, RAM, disk, network)
-2. Configure Docker container metrics dashboard
-3. Create custom dashboard for ydun-scraper performance
-4. Set up alerts for resource thresholds (>80% CPU/RAM)
-5. Test alert notifications
-
-**Resources:**
-- Grafana Dashboard Library: https://grafana.com/grafana/dashboards/
-- Recommended: Dashboard 1860 (Node Exporter Full), 193 (Docker Dashboard)
-
-**Documentation:** `beast/docs/MONITORING-OPERATIONS.md`
-
-**Estimated Effort:** 1-2 hours
-
-**Access:** https://grafana.kitt.agency (you're already logged in!)
+**Status:** Fully planned, ready to execute
 
 ---
 
-### Option 3: Blockchain Infrastructure
+### Option 2: Stage 2 - Full Service Deployment ⭐ HIGH PRIORITY
 
-**Goal:** Begin Cardano preview testnet node deployment
+**Goal:** Deploy real Mundus services (backend, frontends) to Beast
 
-**Why:** Blockchain infrastructure plan complete, ready to start implementation
+**Why:** Tracer bullet validated pipeline, now deploy actual application
 
-**Tasks:**
-1. Review blockchain infrastructure plan
-2. Allocate resources for Cardano preview testnet
-3. Deploy Cardano node (Docker or direct installation)
-4. Begin blockchain sync (this takes time - hours to days)
-5. Document node operations
+**Services to Deploy:**
+1. **backend** (Express TypeScript API)
+   - Supabase PostgreSQL integration
+   - JWT authentication
+   - Article CRUD operations
+
+2. **editor-frontend** (React + Vite)
+   - Article editor UI
+   - Rich text editing
+
+3. **digest-frontend** (React + Vite)
+   - Daily digest display
+   - Article browsing
+
+4. **nginx** (Reverse proxy)
+   - Route requests to appropriate services
+   - Single entry point
 
 **Prerequisites:**
-- Review: `dev-lab/docs/infrastructure/BLOCKCHAIN-INFRASTRUCTURE-2025.md`
-- Review: `dev-lab/docs/cardano/` knowledge base (235KB, 13 files)
-
-**Resource Requirements:**
-- Cardano Preview: ~15GB disk, ~2GB RAM
-- Available on Beast: 1.99TB disk, 94GB RAM ✅ Plenty
-
-**Estimated Effort:** 4-6 hours (sync time variable, can run overnight)
-
-**Note:** Blockchain sync is a long-running process, but setup itself is ~1-2 hours
-
----
-
-### Option 4: Guardian Pi Setup
-
-**Goal:** Deploy network security on Raspberry Pi
-
-**Why:** Complete home lab network security (Pi-hole DNS + WireGuard VPN)
-
-**Tasks:**
-1. Review Guardian Pi architecture plan
-2. Install Pi-hole for network-wide ad/malware blocking
-3. Configure WireGuard VPN for remote access
-4. Set up network monitoring (Prometheus + Grafana)
-5. Document Pi operations
-
-**Prerequisites:**
-- Raspberry Pi hardware (to be confirmed if available)
-- Pi-hole documentation review
-- WireGuard documentation review
-
-**Benefits:**
-- Network-wide ad blocking
-- Secure remote access via VPN
-- DNS-level tracking protection
-- Malware domain blocking
+- Review Mundus monorepo structure
+- Plan subdomain strategy (api.mundus.web3studio.dev, editor.mundus.web3studio.dev?)
+- Update Cloudflare Tunnel config with new routes
 
 **Estimated Effort:** 3-4 hours
 
-**Note:** Requires physical Pi hardware
+**Approach:**
+- One service at a time (backend first)
+- Test each before moving to next
+- Update docker-compose.yml progressively
+
+---
+
+### Option 3: Guardian Pi Setup
+
+**Goal:** Deploy network security on Raspberry Pi
+
+**Status:** Hardware arriving 2025-10-20 (expected)
+
+**Tasks:**
+1. Unbox and initial Pi setup
+2. Install Pi-hole for DNS-based ad blocking
+3. Configure WireGuard VPN for remote access
+4. Set up Guardian monitoring (Prometheus + Grafana)
+5. Document Guardian operations
+
+**Benefits:**
+- Network-wide ad/malware blocking
+- Secure remote access to home network
+- DNS-level tracking protection
+- Always-on monitoring while Beast sleeps
+
+**Prerequisites:**
+- Physical Pi 5 hardware (check if arrived)
+- Network planning (IP allocation, DNS configuration)
+
+**Estimated Effort:** 3-4 hours (initial setup)
+
+**Documentation:** `~/dev-guardian/docs/` (architecture plans ready)
+
+---
+
+### Option 4: Mundus Integration Testing
+
+**Goal:** Test live Mundus service with real workflows
+
+**Why:** Service is deployed, validate it works for intended use cases
+
+**Tasks:**
+1. Test visitor counter (refresh page, verify increment)
+2. Test message board API (POST messages, GET messages)
+3. Performance testing (concurrent users, response times)
+4. Client feedback session (share URL, gather input)
+5. Document issues found
+
+**Prerequisites:**
+- Share https://mundus.web3studio.dev with client/stakeholders
+- Prepare test scenarios
+- Set up monitoring dashboard for live testing
+
+**Estimated Effort:** 1-2 hours
+
+---
+
+## 📊 Planning Documents Created (This Session)
+
+**Optimization Planning:**
+- Complete webhook implementation with Vault integration
+- systemd service configuration for tunnels
+- Container monitoring setup (Prometheus + Grafana)
+- Log aggregation architecture (Loki)
+
+**Key Decisions Made:**
+1. **Webhooks over Guardian watcher** (Beast is always-on for staging)
+2. **Vault for secrets** (no .env files for webhook secret)
+3. **Instant deploy priority** (push → 2 min deploy vs 5 min polling)
+4. **Production-ready focus** (optimize before Stage 2)
+
+**Status:** All documented, ready to execute next session
 
 ---
 
 ## ⚠️ Important Reminders
 
-### 1. Repository Split Strategy
+### 1. Beast is Always-On for Staging
 
-- **dev-network:** Guardian + Beast infrastructure ONLY
-- **dev-lab:** Research, templates, learning (reduced scope)
-- **ydun-scraper:** Independent microservice
-- **Future:** Create focused repos for blockchain nodes, Mundus, etc.
+- Mundus must be accessible 24/7 for client testing
+- This makes webhooks better than Guardian watcher
+- Guardian will handle other always-on tasks
 
-**Rule:** Ask "Can I describe this repo's purpose in one sentence?" before adding code.
+### 2. Vault Integration
 
-### 2. Gitignored Files
+- Dev-vault deployed and operational on Beast (port 8200)
+- Use Vault for ALL secrets (webhook tokens, database URLs, API keys)
+- Bot tokens available via `~/dev-vault/VAULT-USAGE-GUIDE.md`
 
-These files exist locally but are NOT in GitHub:
-- `.env` files (contain secrets)
-- Cloudflare credentials (`~/.cloudflared/`)
-- SSH private keys
+### 3. Two Cloudflare Tunnels Running
 
-**Always check locally before assuming files are missing!**
+- **kitt.agency tunnel** (monitoring, scraper)
+- **web3studio.dev tunnel** (mundus staging)
+- Both must be managed separately
+- Consider systemd for both
 
-### 3. Cloudflare Tunnel Architecture
+### 4. Repository Structure
 
-- **Runs on Beast HOST** (not in Docker)
-- **Log file:** `/tmp/cloudflared.log`
-- **Should see exactly 1 process:** `ps aux | grep "cloudflared tunnel" | grep -v grep`
-
-See: `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md`
-
-### 4. YAGNI Principle
-
-**Only deploy what's needed NOW.**
-- Don't pre-allocate all 96GB RAM
-- Don't deploy all blockchain nodes at once
-- Measure actual usage before scaling
+- **dev-network:** Infrastructure specs (this repo)
+- **Mundus-editor-application:** Application code
+- Changes to both repos required for deployments
+- Always sync GitHub before starting work
 
 ### 5. Jimmy's Workflow
 
-**ALWAYS follow RED/GREEN/CHECKPOINT for implementations:**
-- 🔴 **RED:** Implement (write code, deploy services)
-- 🟢 **GREEN:** Validate (run tests, prove it works)
-- 🔵 **CHECKPOINT:** Gate (mark complete, document rollback)
+**ALWAYS follow RED/GREEN/CHECKPOINT:**
+- 🔴 **RED:** Implement
+- 🟢 **GREEN:** Validate
+- 🔵 **CHECKPOINT:** Gate & document
 
-**Never skip validation or rollback procedures!**
-
-### 6. Fix Now Rule
-
-**Never defer known issues.** Fix immediately or document why deferral is acceptable.
-
-### 7. Documentation Standards
-
-- Factual, objective language (no marketing speak)
-- Include actual dates (ISO 8601: YYYY-MM-DD)
-- Document rollback procedures
-- AI-readable structure (tables, clear headings)
+Beast executed this perfectly for Stage 1!
 
 ---
 
 ## 🔧 Common Operations
 
-### Start/Stop Infrastructure
+### Manage Mundus Service
 
 ```bash
 # SSH to Beast
 ssh jimmyb@192.168.68.100
 
-# Start all Docker services
-cd ~/dev-network/beast/docker
-docker compose up -d
-
-# Start Cloudflare Tunnel (if not running)
-cd ~/dev-network/beast
-nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
-
-# Stop all Docker services
-docker compose down
-
-# Stop Cloudflare Tunnel
-pkill -f "cloudflared tunnel"
+# Check status
+cd ~/dev-network/beast/docker/mundus
+docker compose ps
 
 # View logs
-docker compose logs -f
-docker compose logs -f grafana
-docker compose logs -f ydun-scraper
-tail -50 /tmp/cloudflared.log
+docker compose logs -f hello-world
+
+# Restart service
+docker compose restart hello-world
+
+# Rebuild and deploy
+docker compose build hello-world
+docker compose up -d
+
+# Stop service
+docker compose down
 ```
 
-### Check Status
+### Update from GitHub
 
 ```bash
-# Docker services
-docker compose ps
-docker stats --no-stream
+# Pull application updates
+cd ~/Mundus-editor-application
+git pull origin main
 
-# Cloudflare Tunnel
-cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7
-tail -50 /tmp/cloudflared.log
-
-# Resource usage
-htop
-free -h
-df -h
-```
-
-### Git Operations
-
-```bash
-# Pull latest (do this at session start!)
+# Pull infrastructure updates
 cd ~/dev-network
 git pull origin main
 
-# Check status
-git status
-
-# Commit and push
-git add .
-git commit -m "descriptive message"
-git push origin main
+# Rebuild if code changed
+cd ~/dev-network/beast/docker/mundus
+docker compose build
+docker compose up -d
 ```
 
-### Test Scraper
+### Test Mundus Service
 
 ```bash
-# Health check
-curl https://scrape.kitt.agency/health
+# Health check (internal)
+curl http://localhost:8081/api/health
 
-# Extract article
-curl -X POST https://scrape.kitt.agency/scrape \
-  -H "Content-Type: application/json" \
-  -d '{"urls": ["https://www.bbc.com/news/world"]}' \
-  | jq .
+# Health check (external)
+curl https://mundus.web3studio.dev/api/health
+
+# Get visitor count
+curl https://mundus.web3studio.dev/api/visitors
+
+# View full page
+curl https://mundus.web3studio.dev | head -50
+```
+
+### Manage Cloudflare Tunnels
+
+```bash
+# Check running tunnels
+ps aux | grep "cloudflared tunnel" | grep -v grep
+
+# Check kitt.agency tunnel
+tail -100 /tmp/cloudflared.log
+
+# Check mundus tunnel
+tail -100 /tmp/cloudflared-mundus.log
+
+# Restart mundus tunnel
+pkill -f "cloudflared.*mundus"
+cd ~/dev-network/beast
+nohup cloudflared tunnel --config cloudflare/config-web3studio.yml run > /tmp/cloudflared-mundus.log 2>&1 &
+```
+
+### Vault Operations
+
+```bash
+# Check Vault health
+curl http://192.168.68.100:8200/v1/sys/health
+
+# Access Vault UI
+# Browser: http://192.168.68.100:8200/ui
+
+# CLI operations
+vault status
+vault kv get secret/mundus/github/webhook_secret
+vault kv list secret/mundus
 ```
 
 ---
 
 ## 🆘 Troubleshooting
 
-### Grafana Not Accessible
+### Mundus Service Not Accessible
 
 ```bash
-# Check service
-docker compose ps | grep grafana
+# Check container
+docker compose ps | grep mundus-hello-world
 
-# Check logs
-docker compose logs grafana --tail 50
+# Check logs for errors
+docker compose logs hello-world --tail 50
 
-# Restart
-docker compose restart grafana
+# Check port binding
+netstat -tuln | grep 8081
 
-# Test internal
-curl http://localhost:3000/api/health
+# Restart container
+docker compose restart hello-world
 
-# Test external
-curl https://grafana.kitt.agency/api/health
+# Test internal first
+curl http://localhost:8081/api/health
+
+# Then test external
+curl https://mundus.web3studio.dev/api/health
 ```
 
-### Cloudflare Tunnel Issues
+### Tunnel Issues
 
 ```bash
-# Check process
-ps aux | grep "cloudflared tunnel" | grep -v grep
+# Check mundus tunnel process
+ps aux | grep "cloudflared.*mundus"
 
-# If multiple processes, kill and restart
-pkill -f "cloudflared tunnel"
-cd ~/dev-network/beast
-nohup cloudflared tunnel --config cloudflare/config.yml run > /tmp/cloudflared.log 2>&1 &
+# Check tunnel status
+cloudflared tunnel info 87b661c8-75f9-4113-abf6-f02125a4aaa4
 
-# Check logs
-tail -100 /tmp/cloudflared.log
+# View tunnel logs
+tail -100 /tmp/cloudflared-mundus.log
 
-# Check status
-cloudflared tunnel info d2d710e7-94cd-41d8-9979-0519fa1233e7
+# Restart if needed (see commands above)
 ```
 
-### Docker Issues
+### Vault Issues
 
 ```bash
-# Restart Docker daemon
-sudo systemctl restart docker
+# Check Vault container
+docker compose ps | grep vault
 
-# Rebuild containers
-cd ~/dev-network/beast/docker
-docker compose down
-docker compose up -d --build
+# Check Vault logs
+docker compose logs vault --tail 50
 
-# Check Docker socket
-ls -la /var/run/docker.sock
-```
-
-### Can't SSH to Beast
-
-```bash
-# Check Beast is reachable
-ping 192.168.68.100
-
-# Check SSH service
-ssh -v jimmyb@192.168.68.100
-
-# Verify SSH key
-ls -la ~/.ssh/id_rsa
+# Verify unsealed
+curl http://192.168.68.100:8200/v1/sys/health | jq .sealed
+# Should return: false
 ```
 
 ---
 
 ## 📚 Documentation Reference
 
-### Setup & Deployment
-- `beast/docs/MONITORING-INFRASTRUCTURE-SETUP.md` - Initial monitoring deployment
-- `beast/docs/YDUN-SCRAPER-DEPLOYMENT.md` - Scraper deployment workflow
-- `beast/docs/INFRASTRUCTURE-CLEANUP-WORKFLOW.md` - Configuration cleanup
+### Deployment & Setup
+- `beast/docs/MUNDUS-TUNNEL-SETUP.md` - Cloudflare Tunnel for web3studio.dev
+- `beast/docs/MUNDUS-DEPLOYMENT-SPEC.md` - Service deployment workflow
+- `beast/docs/MUNDUS-DEPLOYMENT-SUCCESS.md` - ⭐ Stage 1 complete report (435 lines)
+- `beast/docs/MONITORING-INFRASTRUCTURE-SETUP.md` - Monitoring deployment
+- `beast/docs/YDUN-SCRAPER-DEPLOYMENT.md` - Scraper deployment
+
+### Planning & Architecture
+- `docs/OPTIMIZATION-PLAN.md` - Infrastructure optimization specs
+- `docs/WEBHOOK-VAULT-INTEGRATION.md` - Auto-deploy implementation
+- `docs/REPOSITORY-ARCHITECTURE.md` - Repository split strategy
 
 ### Operations & Maintenance
 - `beast/docs/BEAST-INFRASTRUCTURE-STATUS.md` - Complete infrastructure status
 - `beast/docs/MONITORING-OPERATIONS.md` - Day-to-day operations
-- `beast/docs/MONITORING-VALIDATION.md` - Testing procedures
 - `beast/docs/ROLLBACK-PROCEDURES.md` - Emergency recovery
-- `beast/cloudflare/TUNNEL-HOST-DEPLOYMENT.md` - Tunnel management
-
-### Integration & Development
-- `beast/docs/MUNDUS-INTEGRATION.md` - Supabase edge function integration
-- `docs/REPOSITORY-ARCHITECTURE.md` - Repository split strategy
-- `docs/ACCESS-METHODS.md` - Access and credentials guide
-
-### Historical
-- `docs/sessions/SESSION-2025-10-17-SUMMARY.md` - Complete session record
+- `~/dev-vault/VAULT-USAGE-GUIDE.md` - Vault secret management
 
 ---
 
@@ -510,36 +581,75 @@ ls -la ~/.ssh/id_rsa
 
 | Issue | Status | Impact | Workaround |
 |-------|--------|--------|------------|
-| Portainer HTTPS via tunnel (502 error) | 🟡 Open | Low | Use https://192.168.68.100:9443 instead |
+| Portainer HTTPS via tunnel (502 error) | 🟡 Open | Low | Use https://192.168.68.100:9443 |
+| Cloudflare Tunnel manual start | 🟡 Open | Medium | systemd service planned (Optimization #1) |
+| Manual GitHub deploy | 🟡 Open | Medium | Webhook automation planned (Optimization #2) |
 
 ---
 
 ## 💾 Resources Running
 
 **Beast (192.168.68.100):**
-- Docker: 6 containers (~2GB RAM, ~3GB disk)
-- Cloudflared: 1 host process (~50MB RAM)
-- **Available:** ~94GB RAM, ~1.99TB disk
+- Docker: 8 containers (~1.1GB RAM, ~4GB disk)
+  - Monitoring: 4 containers
+  - Management: 2 containers (Portainer, Vault)
+  - Services: 2 containers (scraper, mundus)
+- Cloudflared: 2 host processes (~100MB RAM total)
+- **Available:** ~95GB RAM, ~1.99TB disk
 
 **Cloudflare:**
-- Tunnel: d2d710e7-94cd-41d8-9979-0519fa1233e7
-- Connections: 4 active (arn02, arn06, arn07)
-- Routes: grafana.kitt.agency, scrape.kitt.agency, portainer.kitt.agency
+- Tunnel 1 (kitt.agency): d2d710e7-94cd-41d8-9979-0519fa1233e7
+  - 4 connections (arn02, arn06, arn07)
+  - Routes: grafana, scrape, portainer
+- Tunnel 2 (web3studio.dev): 87b661c8-75f9-4113-abf6-f02125a4aaa4
+  - 4 connections (arn02, arn06, arn07)
+  - Route: mundus
 
 ---
 
-## 🚀 Ready to Start!
+## 🚀 Recommended Next Session Flow
 
-**Recommended first action:**
-1. Run quick status check (commands at top of this file)
-2. Review last session summary if needed
-3. Choose one of the 4 next step options
-4. Follow Jimmy's Workflow for implementation
+**Step 1: Status Check** (5 min)
+- Run quick status commands (top of file)
+- Verify both tunnels running
+- Test all endpoints
 
-**Good luck!** 🎉
+**Step 2: Choose Path** (1 min)
+- Option 1: Infrastructure optimizations (90 min, production-ready)
+- Option 2: Stage 2 deployment (3-4 hours, full services)
+- Option 3: Guardian Pi setup (if hardware arrived)
+- Option 4: Mundus testing (1-2 hours, client feedback)
+
+**Step 3: Execute** (variable)
+- Follow Jimmy's Workflow (RED/GREEN/CHECKPOINT)
+- Document as you go
+- Test thoroughly before marking complete
+
+**Step 4: Update This File** (5 min)
+- Document what was accomplished
+- Update status sections
+- Add new issues/learnings
+- Push to GitHub
+
+---
+
+## 🎯 Success Metrics
+
+**Stage 1 Complete:**
+- ✅ Pipeline validated end-to-end
+- ✅ Service deployed and accessible
+- ✅ Documentation comprehensive
+- ✅ Three-machine architecture working
+- ✅ Ready for Stage 2 or optimizations
+
+**Next Milestone Options:**
+- **Optimization Complete:** Auto-deploy working, monitoring configured
+- **Stage 2 Complete:** All services deployed, integrated, tested
+- **Guardian Complete:** Pi operational, network secured
 
 ---
 
 **This document is updated at the end of each session.**
 
-**Last Updated:** 2025-10-17
+**Last Updated:** 2025-10-20
+**Next Session:** Choose Option 1 (Optimizations) or Option 2 (Stage 2 Deployment)
