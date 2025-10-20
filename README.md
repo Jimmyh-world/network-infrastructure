@@ -53,13 +53,15 @@ dev-network/
 
 ---
 
-## Current Status (2025-10-19)
+## Current Status (2025-10-20)
 
 **Guardian Pi:**
-- Status: Planned (hardware arriving 2025-10-20)
-- Purpose: Network-wide ad/malware blocking, VPN, monitoring, always-on services
-- Design Docs: `~/dev-guardian/` (architecture and planning)
-- Deployment Configs: `guardian/` (this repository)
+- Status: ✅ DEPLOYED (2025-10-19) at 192.168.68.10
+- Hardware: Raspberry Pi 5 (8GB RAM)
+- Running: Pi-hole (DNS filtering, Beast using it for DNS)
+- Phase: Tier 1 partially deployed (needs Suricata, ntopng, monitoring)
+- Design Docs: `~/dev-guardian/` (architecture, planning, setup guides)
+- Deployment Configs: `guardian/` (this repository - needs population)
 
 **Beast:**
 - Status: Monitoring + Scraper infrastructure deployed (2025-10-17)
@@ -193,12 +195,15 @@ cd ~/dev-network
 claude code
 ```
 
-**Guardian Access (when deployed):**
+**Guardian Access:**
 ```bash
-# Local network
-ssh pi@192.168.68.x
+# Local network (SSH configured)
+ssh jamesb@192.168.68.10
 
-# Via VPN
+# Pi-hole Admin UI
+http://192.168.68.10/admin
+
+# Via VPN (WireGuard - planned, not yet deployed)
 # (WireGuard config TBD)
 ```
 

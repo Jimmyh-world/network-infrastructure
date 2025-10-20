@@ -1,8 +1,8 @@
 # Guardian - Deployment Configurations
 
-**Design Repository:** `~/dev-guardian/`
+**Design Repository:** `~/dev-guardian/` (architecture, planning, setup guides)
 **Purpose:** Deployment configs and runtime files for Guardian Pi 5
-**Status:** Awaiting hardware deployment (Deco XE75 arriving 2025-10-20)
+**Status:** Hardware DEPLOYED (2025-10-19) - Pi-hole running, Tier 1 expansion needed
 
 ---
 
@@ -42,8 +42,18 @@ dev-network/guardian/ → Deployment, configs, runtime (Guardian Pi 5)
 
 ## Status
 
-**Current:** Empty (hardware pending)
-**Next:** Populate with deployment configs when Phase 1 begins (post 2025-10-20)
+**Hardware:** Guardian Pi 5 (8GB RAM) deployed at 192.168.68.10 ✅
+**Services Running:** Pi-hole (DNS filtering, Beast using it) ✅
+**Current Phase:** Tier 1 partially deployed (see ~/dev-guardian/STATUS.md)
+
+**This Directory:** Empty (needs population with deployment configs)
+**Next:** Create Docker Compose files and configs for remaining Tier 1 services:
+- Suricata (IDS, deep packet inspection)
+- ntopng (traffic monitoring)
+- Grafana/Prometheus (monitoring dashboards)
+- Alert system
+
+**Complete Architecture:** See `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md`
 
 ---
 

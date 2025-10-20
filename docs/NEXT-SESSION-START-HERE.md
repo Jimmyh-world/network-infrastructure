@@ -298,32 +298,40 @@ https://192.168.68.100:9443      # Portainer
 
 ---
 
-### Option 3: Guardian Pi Setup
+### Option 3: Guardian Pi Tier 1 Completion
 
-**Goal:** Deploy network security on Raspberry Pi
+**Goal:** Complete Guardian Tier 1 Core Security deployment
 
-**Status:** Hardware arriving 2025-10-20 (expected)
+**Status:** ✅ Hardware deployed (2025-10-19), Pi-hole running, expansion needed
 
-**Tasks:**
-1. Unbox and initial Pi setup
-2. Install Pi-hole for DNS-based ad blocking
-3. Configure WireGuard VPN for remote access
-4. Set up Guardian monitoring (Prometheus + Grafana)
-5. Document Guardian operations
+**Current State:**
+- Guardian Pi 5 (8GB RAM) at 192.168.68.10 ✅
+- Pi-hole running (Beast using it for DNS) ✅
+- Tier 1 partially deployed ⚠️
+
+**Remaining Tasks (Tier 1):**
+1. Deploy Suricata (IDS, deep packet inspection)
+2. Deploy ntopng (detailed traffic analysis)
+3. Deploy Grafana/Prometheus (monitoring dashboards)
+4. Configure alert system
+5. Populate `~/dev-network/guardian/` with deployment configs
 
 **Benefits:**
-- Network-wide ad/malware blocking
-- Secure remote access to home network
-- DNS-level tracking protection
+- Complete network security "moat"
+- Deep packet inspection and threat detection
+- Comprehensive traffic visibility
 - Always-on monitoring while Beast sleeps
 
 **Prerequisites:**
-- Physical Pi 5 hardware (check if arrived)
-- Network planning (IP allocation, DNS configuration)
+- Review `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md`
+- Review `~/dev-guardian/docs/GUARDIAN-SETUP.md`
 
-**Estimated Effort:** 3-4 hours (initial setup)
+**Estimated Effort:** 3-4 hours (complete Tier 1)
 
-**Documentation:** `~/dev-guardian/docs/` (architecture plans ready)
+**Documentation:**
+- Architecture: `~/dev-guardian/docs/GUARDIAN-2.0-ARCHITECTURE.md`
+- Setup guide: `~/dev-guardian/docs/GUARDIAN-SETUP.md`
+- Current status: `~/dev-guardian/STATUS.md`
 
 ---
 

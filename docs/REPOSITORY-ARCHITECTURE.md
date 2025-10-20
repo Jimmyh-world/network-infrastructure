@@ -44,6 +44,7 @@ This document explains the repository architecture strategy for the home lab inf
 | Repository | Purpose | Contents | Status |
 |------------|---------|----------|--------|
 | **dev-network** | Guardian Pi + Beast infrastructure | Network configs, monitoring, Docker compose, Cloudflare Tunnel | ✅ Active (2025-10-17) |
+| **dev-guardian** | Guardian Pi architecture & planning | Architecture docs, setup guides, design specs | ✅ Active (2025-10-19) |
 | **dev-lab** | General development workspace | Blockchain research, templates, learning materials | ✅ Active (reduced scope) |
 | **ydun-scraper** | Article extraction microservice | Python Flask service, trafilatura integration | ✅ Active (2025-10-17) |
 
@@ -66,19 +67,39 @@ This document explains the repository architecture strategy for the home lab inf
 **Scope:** Physical and virtual infrastructure for home lab network
 
 **Includes:**
-- Guardian Pi configuration (Pi-hole, WireGuard, monitoring)
+- Guardian Pi deployment configs (Docker Compose, actual configs)
 - Beast server configuration (Docker, system setup)
 - Network-wide configs (DNS, firewall, routing)
 - Monitoring infrastructure (Prometheus, Grafana)
 - Cloudflare Tunnel configuration
-- Infrastructure documentation
+- Infrastructure deployment documentation
 
 **Excludes:**
+- Guardian architecture/planning (belongs in dev-guardian)
 - Application code (belongs in app-specific repos)
 - Blockchain nodes (belong in chain-specific repos)
 - Development tools (belong in dev-lab)
 
-**Test:** "Is this about the infrastructure that *runs* things, not the things *being run*?"
+**Test:** "Is this about the infrastructure deployment configs, not the design/planning?"
+
+---
+
+### dev-guardian
+
+**Scope:** Guardian Pi architecture, planning, and setup documentation
+
+**Includes:**
+- Guardian 2.0 architecture documentation
+- Setup procedures and guides
+- Design specifications
+- Status tracking
+- Planning documents
+
+**Excludes:**
+- Actual deployment configs (belong in dev-network/guardian/)
+- Running services (deployed on Guardian Pi hardware)
+
+**Test:** "Is this Guardian architecture/planning, not actual deployment configs?"
 
 ---
 
@@ -264,9 +285,13 @@ All repositories follow these standards:
 ### Current Dependencies
 
 ```
-dev-network (infrastructure)
+dev-network (infrastructure deployment)
   ├── Deploys: ydun-scraper (microservice)
+  ├── References: dev-guardian (Guardian architecture/planning)
   └── References: dev-lab (templates)
+
+dev-guardian (Guardian planning)
+  └── Referenced by: dev-network (for deployment specs)
 
 ydun-scraper (microservice)
   └── Called by: mundus-context-engine (planned)
@@ -304,6 +329,7 @@ dev-lab (workspace)
 ### Repository URLs
 
 - https://github.com/Jimmyh-world/dev-network
+- https://github.com/Jimmyh-world/dev-guardian
 - https://github.com/Jimmyh-world/dev-lab
 - https://github.com/Jimmyh-world/ydun-scraper
 
@@ -329,17 +355,22 @@ All repositories currently **private**.
 │   ├── docs/                   # Cross-project documentation
 │   └── [various research]
 │
-├── dev-network/     # Infrastructure configs
+├── dev-network/                # Infrastructure deployment configs
 │   ├── beast/                  # Beast server configs
-│   ├── guardian/               # Guardian Pi configs (planned)
+│   ├── guardian/               # Guardian Pi deployment configs
 │   └── docs/                   # Infrastructure documentation
 │
-├── ydun-scraper/              # Article extraction service
+├── dev-guardian/               # Guardian Pi architecture & planning
+│   ├── docs/                   # Architecture, setup guides
+│   ├── STATUS.md               # Guardian project status
+│   └── NEXT-SESSION-START-HERE.md
+│
+├── ydun-scraper/               # Article extraction service
 │   ├── src/                    # Service source code
 │   ├── Dockerfile              # Container definition
 │   └── README.md
 │
-└── [future repos]/            # Additional focused repositories
+└── [future repos]/             # Additional focused repositories
 ```
 
 ### Beast (`/home/jimmyb/`)

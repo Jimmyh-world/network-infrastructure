@@ -16,7 +16,9 @@
 | **Prometheus** | http://192.168.68.100:9090 | N/A (internal only) | None |
 | **Node Exporter** | http://192.168.68.100:9100 | N/A (internal only) | None |
 | **cAdvisor** | http://192.168.68.100:8080 | N/A (internal only) | None |
+| **Pi-hole (Guardian)** | http://192.168.68.10/admin | N/A (internal only) | Web password |
 | **Beast SSH** | ssh jimmyb@192.168.68.100 | N/A | SSH key: beast@dev-lab |
+| **Guardian SSH** | ssh jamesb@192.168.68.10 | N/A | SSH key |
 
 ---
 
@@ -273,9 +275,12 @@ chmod 600 ~/.cloudflared/*
 Internet
   ↓
 Router (192.168.68.1)
-  ├── Chromebook (192.168.68.x) - Development, documentation
-  ├── Beast (192.168.68.100)    - Infrastructure, services
-  └── [Guardian Pi] (planned)    - DNS, VPN, security
+  ↓
+DNS (Pi-hole on Guardian)
+  ↓
+├── Chromebook (192.168.68.x)  - Development, documentation
+├── Guardian Pi (192.168.68.10) - DNS filtering, VPN, security
+└── Beast (192.168.68.100)      - Infrastructure, services
 ```
 
 ### External Access Flow
