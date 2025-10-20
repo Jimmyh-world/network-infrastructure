@@ -6,9 +6,10 @@
 # Tunnel name: mundus-tunnel (or beast-mundus-tunnel)
 # Domain: web3studio.dev
 
-# PLACEHOLDER: Update this with actual tunnel ID after creation
-tunnel: [TUNNEL_ID_TO_BE_CREATED]
-credentials-file: /home/jimmyb/.cloudflared/[TUNNEL_ID].json
+# Tunnel created: 2025-10-20
+# Status: HEALTHY (4 active connections)
+tunnel: 87b661c8-75f9-4113-abf6-f02125a4aaa4
+credentials-file: /home/jimmyb/.cloudflared/87b661c8-75f9-4113-abf6-f02125a4aaa4.json
 
 ingress:
   # Mundus Editor Platform - Staging

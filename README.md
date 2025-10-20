@@ -265,16 +265,16 @@ ssh pi@192.168.68.x
 ### Infrastructure Components
 
 **Cloudflare Tunnel (Dedicated):**
-- Tunnel: mundus-tunnel (separate from kitt.agency)
+- Tunnel: mundus-tunnel (87b661c8-75f9-4113-abf6-f02125a4aaa4)
 - Domain: web3studio.dev
 - Route: mundus.web3studio.dev → Beast:8081
-- Status: ⚪ Configured (awaiting tunnel creation on Beast)
+- Status: ✅ HEALTHY (4 active connections) - Running on Beast
 
 **Beast Deployment:**
 - Location: `beast/docker/mundus/`
 - Services: hello-world-test (tracer bullet), then full monorepo
 - Repository: https://github.com/Jimmyh-world/m-e-p (main branch)
-- Status: ⚪ Configured (awaiting m-e-p repository setup)
+- Status: ⚪ Infrastructure Ready (awaiting m-e-p repository with hello-world service)
 
 ### Deployment Stages
 
