@@ -253,4 +253,81 @@ ssh pi@192.168.68.x
 - Set up automated backups
 - Monitor system performance baseline
 
-**Last Updated:** 2025-10-17
+---
+
+## Mundus Editor Platform - Staging Deployment
+
+**Status:** Infrastructure Ready (2025-10-20) | Awaiting Application Deployment
+**Domain:** web3studio.dev
+**Staging URL:** https://mundus.web3studio.dev
+**Purpose:** Beast staging environment for Mundus Editor Platform before Render.com production
+
+### Infrastructure Components
+
+**Cloudflare Tunnel (Dedicated):**
+- Tunnel: mundus-tunnel (separate from kitt.agency)
+- Domain: web3studio.dev
+- Route: mundus.web3studio.dev → Beast:8081
+- Status: ⚪ Configured (awaiting tunnel creation on Beast)
+
+**Beast Deployment:**
+- Location: `beast/docker/mundus/`
+- Services: hello-world-test (tracer bullet), then full monorepo
+- Repository: https://github.com/Jimmyh-world/m-e-p (main branch)
+- Status: ⚪ Configured (awaiting m-e-p repository setup)
+
+### Deployment Stages
+
+**Stage 1: Tracer Bullet (Next)**
+- Deploy hello-world-test service
+- Validate pipeline: GitHub → Beast → Cloudflare → Internet
+- Test: https://mundus.web3studio.dev
+
+**Stage 2: Final Assembly**
+- Deploy backend (Express TypeScript API)
+- Deploy editor-frontend (React + Vite)
+- Deploy digest-frontend (React + Vite)
+- Integration testing on Beast
+
+**Stage 3: Live Testing**
+- Client validation on Beast staging
+- Iterate based on feedback
+- Performance testing
+
+**Stage 4: Production Migration**
+- Deploy to Render.com (when Beast validation complete)
+- Update DNS or use Render domains
+- Decommission Beast staging (optional)
+
+### Available Documentation
+
+- `beast/cloudflare/config-web3studio.yml` - Tunnel configuration
+- `beast/docs/MUNDUS-TUNNEL-SETUP.md` - Cloudflare Tunnel setup instructions
+- `beast/docs/MUNDUS-DEPLOYMENT-SPEC.md` - Complete deployment workflow
+- `beast/docker/mundus/docker-compose.yml` - Service orchestration (stub)
+
+### Quick Start (For Beast Execution)
+
+**1. Set up Cloudflare Tunnel:**
+```bash
+# See: beast/docs/MUNDUS-TUNNEL-SETUP.md
+cloudflared tunnel create mundus-tunnel
+cloudflared tunnel route dns mundus-tunnel mundus.web3studio.dev
+# Start tunnel with config-web3studio.yml
+```
+
+**2. Deploy services:**
+```bash
+# See: beast/docs/MUNDUS-DEPLOYMENT-SPEC.md
+cd ~
+git clone https://github.com/Jimmyh-world/m-e-p.git
+cd ~/dev-network/beast/docker/mundus
+docker compose up -d
+```
+
+**3. Test:**
+```bash
+curl https://mundus.web3studio.dev
+```
+
+**Last Updated:** 2025-10-20

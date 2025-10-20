@@ -1,0 +1,30 @@
+# Cloudflare Tunnel Configuration - web3studio.dev
+# Mundus Editor Platform Staging Environment
+# Created: 2025-10-20
+
+# IMPORTANT: This is a SEPARATE tunnel from kitt.agency tunnel
+# Tunnel name: mundus-tunnel (or beast-mundus-tunnel)
+# Domain: web3studio.dev
+
+# PLACEHOLDER: Update this with actual tunnel ID after creation
+tunnel: [TUNNEL_ID_TO_BE_CREATED]
+credentials-file: /home/jimmyb/.cloudflared/[TUNNEL_ID].json
+
+ingress:
+  # Mundus Editor Platform - Staging
+  # Initially: hello-world tracer bullet
+  # Later: Full monorepo services
+  - hostname: mundus.web3studio.dev
+    service: http://localhost:8081
+    # Note: Port 8081 to avoid conflict with existing services
+    # Can adjust based on docker-compose configuration
+
+  # Future routes can be added here as services expand
+  # Examples:
+  # - hostname: api.mundus.web3studio.dev
+  #   service: http://localhost:8082
+  # - hostname: editor.mundus.web3studio.dev
+  #   service: http://localhost:8083
+
+  # Catch-all - reject any other traffic
+  - service: http_status:404
