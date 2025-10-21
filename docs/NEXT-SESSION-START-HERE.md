@@ -1,9 +1,9 @@
 # Next Session Start Here
 
-**Last Updated:** 2025-10-20
-**Last Session:** Deco XE75 network setup + infrastructure migration
-**Session Summary:** Successfully deployed Deco XE75 mesh network, migrated Guardian and Beast to new network (Riverview2), verified all services operational with exceptional performance (818 Mbps fiber)
-**Next Priority:** Tailscale VPN deployment for global remote access
+**Last Updated:** 2025-10-21
+**Last Session:** Tailscale VPN deployment
+**Session Summary:** Successfully deployed Tailscale mesh VPN across all machines (Chromebook, Beast, Guardian, Phone). SSH now works globally with simple hostnames (`ssh beast`, `ssh guardian`). Subnet routing enabled for entire home network (192.168.68.0/24). Zero kwallet errors. Can now SSH and manage infrastructure from anywhere.
+**Next Priority:** Infrastructure optimizations (webhooks, systemd, monitoring) OR Stage 2 Mundus deployment
 
 ---
 
