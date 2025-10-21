@@ -41,7 +41,7 @@ REPO_CONFIGS = {
     },
     'Mundus-editor-application': {
         'path': '/home/jimmyb/Mundus-editor-application',
-        'compose_path': '/home/jimmyb/Mundus-editor-application',
+        'compose_path': '/home/jimmyb/dev-network/beast/docker/mundus',
         'compose_file': 'docker-compose.yml',
         'enabled': True
     },
