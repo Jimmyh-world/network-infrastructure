@@ -28,6 +28,9 @@ scrape_configs:
       - targets: ['node-exporter:9100']
         labels:
           instance: 'beast'
+      - targets: ['192.168.68.10:9100']
+        labels:
+          instance: 'guardian'
 
   # cAdvisor - Docker container metrics
   - job_name: 'cadvisor'

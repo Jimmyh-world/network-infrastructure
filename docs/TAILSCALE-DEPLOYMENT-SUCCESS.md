@@ -87,14 +87,14 @@ curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up --ssh --advertise-routes=192.168.68.0/24 --accept-routes --hostname=guardian
 ```
 - Authenticated via browser
-- Named: "gaurdian" (typo preserved for compatibility)
+- Named: "guardian"
 - IP: 100.115.186.91
 - Subnet router: 192.168.68.0/24
 - Tailscale SSH enabled
 
 ### Phase 4: Approve Subnet Routes
 - Accessed: https://login.tailscale.com/admin/machines
-- Found: gaurdian machine
+- Found: guardian machine
 - Approved: 192.168.68.0/24 subnet route
 - Status: Active ✅
 
@@ -107,7 +107,7 @@ Host beast
     ForwardAgent yes
 
 Host guardian
-    HostName gaurdian
+    HostName guardian
     User jamesb
     ForwardAgent yes
 ```

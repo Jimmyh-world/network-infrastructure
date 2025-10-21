@@ -1,9 +1,9 @@
 # Next Session Start Here
 
 **Last Updated:** 2025-10-21
-**Last Session:** Tailscale VPN deployment
-**Session Summary:** Successfully deployed Tailscale mesh VPN across all machines (Chromebook, Beast, Guardian, Phone). SSH now works globally with simple hostnames (`ssh beast`, `ssh guardian`). Subnet routing enabled for entire home network (192.168.68.0/24). Zero kwallet errors. Can now SSH and manage infrastructure from anywhere.
-**Next Priority:** Infrastructure optimizations (webhooks, systemd, monitoring) OR Stage 2 Mundus deployment
+**Last Session:** Tailscale VPN + Guardian Tier 1 Security Deployment
+**Session Summary:** Successfully deployed Tailscale mesh VPN AND Guardian Tier 1 security stack. Suricata IDS running with 45,862 threat detection rules. Centralized monitoring on Beast (Prometheus scraping Guardian). ONE Grafana dashboard showing everything. Network security significantly enhanced with DNS filtering + deep packet inspection.
+**Next Priority:** Configure network-wide Pi-hole DNS (Deco app) → Guardian Tier 2 (always-on intelligence)
 
 ---
 
