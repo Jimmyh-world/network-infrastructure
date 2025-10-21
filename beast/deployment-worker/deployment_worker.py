@@ -34,8 +34,14 @@ KAFKA_GROUP_ID = os.getenv('KAFKA_GROUP_ID', 'deployment-worker')
 # Repository deployment configurations
 REPO_CONFIGS = {
     'mundus-editor-application': {
-        'path': '/home/jimmyb/mundus-editor-application',
-        'compose_path': '/home/jimmyb/mundus-editor-application',
+        'path': '/home/jimmyb/Mundus-editor-application',
+        'compose_path': '/home/jimmyb/Mundus-editor-application',
+        'compose_file': 'docker-compose.yml',
+        'enabled': True
+    },
+    'Mundus-editor-application': {
+        'path': '/home/jimmyb/Mundus-editor-application',
+        'compose_path': '/home/jimmyb/Mundus-editor-application',
         'compose_file': 'docker-compose.yml',
         'enabled': True
     },
