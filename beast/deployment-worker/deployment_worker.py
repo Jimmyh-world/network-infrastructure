@@ -20,7 +20,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('/var/log/deployment-worker.log')
+        logging.FileHandler('/home/jimmyb/deployment-worker.log')
     ]
 )
 logger = logging.getLogger(__name__)
