@@ -20,5 +20,9 @@ ingress:
   - hostname: scrape.kitt.agency
     service: http://localhost:5000
 
+  # Guardian Webhook Receiver - GitHub webhooks for auto-deployment
+  - hostname: webhook.kitt.agency
+    service: http://192.168.68.10:8000
+
   # Catch-all - reject any other traffic
   - service: http_status:404
