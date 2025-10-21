@@ -1,0 +1,29 @@
+[Unit]
+Description=Beast Deployment Worker (Kafka Consumer)
+Documentation=https://github.com/Jimmyh-world/network-infrastructure
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=jimmyb
+Group=jimmyb
+WorkingDirectory=/home/jimmyb/dev-network/beast/deployment-worker
+Environment="KAFKA_BOOTSTRAP_SERVERS=localhost:9092"
+Environment="KAFKA_INPUT_TOPIC=deployment-webhooks"
+Environment="KAFKA_OUTPUT_TOPIC=deployment-results"
+Environment="KAFKA_GROUP_ID=deployment-worker"
+ExecStart=/usr/bin/python3 /home/jimmyb/dev-network/beast/deployment-worker/deployment_worker.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Logging
+SyslogIdentifier=deployment-worker
+
+# Security (run as non-root user)
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
