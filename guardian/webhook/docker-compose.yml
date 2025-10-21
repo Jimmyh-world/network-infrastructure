@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  webhook-receiver:
+    build: .
+    container_name: webhook-receiver
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-192.168.68.100:9092}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-deployment-webhooks}
+    env_file:
+      - .env
+    networks:
+      - webhook-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  webhook-network:
+    driver: bridge

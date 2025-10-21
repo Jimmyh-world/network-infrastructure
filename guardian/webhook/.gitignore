@@ -1,0 +1,15 @@
+# Environment files
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
