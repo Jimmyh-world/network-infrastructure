@@ -5,19 +5,43 @@ networks:
     driver: bridge
 
 services:
-  hello-world:
+  # Backend API Service (Express + PostgreSQL)
+  mundus-backend:
     build:
-      context: /home/jimmyb/Mundus-editor-application/services/hello-world-fullstack
-      dockerfile: ../../docker/services/hello-world-fullstack.Dockerfile
-    container_name: mundus-hello-world
+      context: /home/jimmyb/Mundus-editor-application/backend
+      dockerfile: ../docker/services/backend.Dockerfile
+    container_name: mundus-backend
     restart: unless-stopped
     ports:
-      - "8081:3000"  # Port 8081 external (Cloudflare), 3000 internal (Express)
+      - "3001:3001"  # Backend API port
+    env_file:
+      - .env.backend  # Fetched from Vault via fetch-secrets.sh
+    volumes:
+      - ./.env.backend:/app/config/config.env:ro  # Mount env file to config path
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
+    networks:
+      - mundus
+    depends_on:
+      - mundus-frontend
+
+  # Frontend Service (React + Vite + nginx)
+  mundus-frontend:
+    build:
+      context: /home/jimmyb/Mundus-editor-application/frontend
+      dockerfile: ../docker/services/frontend.Dockerfile
+    container_name: mundus-frontend
+    restart: unless-stopped
+    ports:
+      - "8081:80"  # Port 8081 external (Cloudflare Tunnel), 80 internal (nginx)
     environment:
       - NODE_ENV=production
-      - PORT=3000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
       timeout: 3s
       retries: 3
