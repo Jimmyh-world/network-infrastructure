@@ -36,13 +36,13 @@ REPO_CONFIGS = {
     'mundus-editor-application': {
         'path': '/home/jimmyb/Mundus-editor-application',
         'compose_path': '/home/jimmyb/Mundus-editor-application',
-        'compose_file': 'docker-compose.yml',
+        'compose_file': 'docker-compose.mono.yml',
         'enabled': True
     },
     'Mundus-editor-application': {
         'path': '/home/jimmyb/Mundus-editor-application',
-        'compose_path': '/home/jimmyb/dev-network/beast/docker/mundus',
-        'compose_file': 'docker-compose.yml',
+        'compose_path': '/home/jimmyb/Mundus-editor-application',
+        'compose_file': 'docker-compose.mono.yml',
         'enabled': True
     },
     'dev-rag': {
