@@ -5,46 +5,26 @@ networks:
     driver: bridge
 
 services:
-  # Backend API Service (Express + PostgreSQL)
-  mundus-backend:
+  # Mono-Container: Backend API + Frontend (React/Vite)
+  # Combines backend (Express) and frontend (React/Vite) in single container
+  # Serves both API endpoints and static frontend files from port 3001
+  mundus:
     build:
-      context: /home/jimmyb/Mundus-editor-application/backend
-      dockerfile: ../docker/services/backend.Dockerfile
-    container_name: mundus-backend
+      context: /home/jimmyb/Mundus-editor-application
+      dockerfile: docker/services/mono.Dockerfile
+    container_name: mundus
     restart: unless-stopped
     ports:
-      - "3001:3001"  # Backend API port
+      - "8081:3001"  # Port 8081 external (Cloudflare Tunnel), 3001 internal (Express)
     env_file:
-      - .env.backend  # Fetched from Vault via fetch-secrets.sh
-    volumes:
-      - ./.env.backend:/app/config/config.env:ro  # Mount env file to config path
+      - .env.backend  # Backend configuration from Vault
+    environment:
+      - NODE_ENV=production
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/v2/articles?limit=1', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 15s
-    networks:
-      - mundus
-    depends_on:
-      - mundus-frontend
-
-  # Frontend Service (React + Vite + nginx)
-  mundus-frontend:
-    build:
-      context: /home/jimmyb/Mundus-editor-application/frontend
-      dockerfile: ../docker/services/frontend.Dockerfile
-    container_name: mundus-frontend
-    restart: unless-stopped
-    ports:
-      - "8081:80"  # Port 8081 external (Cloudflare Tunnel), 80 internal (nginx)
-    environment:
-      - NODE_ENV=production
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
     networks:
       - mundus
