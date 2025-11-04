@@ -41,8 +41,8 @@ REPO_CONFIGS = {
     },
     'Mundus-editor-application': {
         'path': '/home/jimmyb/Mundus-editor-application',
-        'compose_path': '/home/jimmyb/Mundus-editor-application',
-        'compose_file': 'docker-compose.mono.yml',
+        'compose_path': '/home/jimmyb/dev-network/beast/docker/mundus',
+        'compose_file': 'docker-compose.yml',
         'enabled': True
     },
     'dev-rag': {
@@ -179,8 +179,9 @@ def deploy_repo(repo_name: str, commit: str, branch: str) -> Dict:
     if compose_path:
         logger.info(f"Step 2: Restarting Docker services")
 
-        # Build and restart
-        compose_cmd = f'docker compose -f {compose_file} up -d --build'
+        # Build and restart with --no-cache to force fresh builds
+        # This prevents Docker layer caching from hiding code changes (especially CSS/JS)
+        compose_cmd = f'docker compose -f {compose_file} build --no-cache && docker compose -f {compose_file} up -d'
         compose_result = execute_command(compose_cmd, cwd=compose_path, timeout=600)
         deployment_log.append({
             'step': 'docker_compose',
