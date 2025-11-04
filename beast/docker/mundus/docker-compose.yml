@@ -13,6 +13,7 @@ services:
       context: /home/jimmyb/Mundus-editor-application
       dockerfile: docker/services/mono.Dockerfile
       args:
+        CACHE_BUST: ${CACHE_BUST:-default}
         VITE_SUPABASE_URL: https://zofcfcclhaqvqdytarxe.supabase.co
         VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvZmNmY2NsaGFxdnFkeXRhcnhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MTg3NzUsImV4cCI6MjA3NDE5NDc3NX0.VXx4brC-2TuUmh-A7PqzvBblUSWRyYQvnh5lBj8kDEQ
     container_name: mundus
