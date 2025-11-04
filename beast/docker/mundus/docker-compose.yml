@@ -12,12 +12,16 @@ services:
     build:
       context: /home/jimmyb/Mundus-editor-application
       dockerfile: docker/services/mono.Dockerfile
+      args:
+        VITE_SUPABASE_URL: https://zofcfcclhaqvqdytarxe.supabase.co
+        VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvZmNmY2NsaGFxdnFkeXRhcnhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2MTg3NzUsImV4cCI6MjA3NDE5NDc3NX0.VXx4brC-2TuUmh-A7PqzvBblUSWRyYQvnh5lBj8kDEQ
     container_name: mundus
     restart: unless-stopped
     ports:
       - "8081:3000"  # Port 8081 external (Cloudflare Tunnel), 3000 internal (Express)
     env_file:
       - .env.backend  # Backend configuration from Vault
+      - .env.frontend  # Frontend Supabase credentials
     volumes:
       - ./.env.backend:/app/config/config.env:ro  # Mount env file to config path
     environment:
