@@ -20,6 +20,11 @@ ingress:
     # Note: Port 8081 to avoid conflict with existing services
     # Can adjust based on docker-compose configuration
 
+  # Mundus PDF Service - PDF generation microservice
+  - hostname: pdf.mundus.web3studio.dev
+    service: http://localhost:3002
+    # PDF service for HTML→PDF conversion and Supabase upload
+
   # Future routes can be added here as services expand
   # Examples:
   # - hostname: api.mundus.web3studio.dev
