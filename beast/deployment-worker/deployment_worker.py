@@ -153,22 +153,22 @@ def deploy_repo(repo_name: str, commit: str, branch: str) -> Dict:
 
     deployment_log = []
 
-    # Step 1: Git pull
-    logger.info(f"Step 1: Pulling latest code from {branch}")
-    git_result = execute_command(f'git pull origin {branch}', cwd=repo_path)
+    # Step 1: Git fetch and hard reset (always match GitHub exactly)
+    logger.info(f"Step 1: Fetching and resetting to origin/{branch}")
+    git_result = execute_command(f'git fetch origin && git reset --hard origin/{branch}', cwd=repo_path)
     deployment_log.append({
-        'step': 'git_pull',
-        'command': f'git pull origin {branch}',
+        'step': 'git_reset',
+        'command': f'git fetch origin && git reset --hard origin/{branch}',
         'success': git_result['success'],
         'output': git_result['stdout'],
         'error': git_result['stderr']
     })
 
     if not git_result['success']:
-        logger.error(f"Git pull failed: {git_result['stderr']}")
+        logger.error(f"Git reset failed: {git_result['stderr']}")
         return {
             'success': False,
-            'message': f'Git pull failed for {repo_name}',
+            'message': f'Git reset failed for {repo_name}',
             'details': {
                 'log': deployment_log,
                 'error': git_result['stderr']
