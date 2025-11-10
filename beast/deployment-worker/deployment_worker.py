@@ -61,6 +61,12 @@ REPO_CONFIGS = {
         'compose_path': '/home/jimmyb/dev-network/beast/docker',
         'compose_file': 'docker-compose.yml',
         'enabled': True
+    },
+    'digest-service': {
+        'path': '/home/jimmyb/digest-service',
+        'compose_path': '/home/jimmyb/digest-service',
+        'compose_file': 'docker-compose.yml',
+        'enabled': True
     }
 }
 
