@@ -41,8 +41,8 @@ REPO_CONFIGS = {
     },
     'Mundus-editor-application': {
         'path': '/home/jimmyb/Mundus-editor-application',
-        'compose_path': '/home/jimmyb/dev-network/beast/docker/mundus',
-        'compose_file': 'docker-compose.yml',
+        'compose_path': '/home/jimmyb/Mundus-editor-application',
+        'compose_file': 'docker-compose.mono.yml',
         'enabled': True
     },
     'dev-rag': {
@@ -185,11 +185,25 @@ def deploy_repo(repo_name: str, commit: str, branch: str) -> Dict:
     if compose_path:
         logger.info(f"Step 2: Restarting Docker services")
 
+        # Stop and remove existing containers first
+        logger.info(f"Step 2a: Stopping existing containers")
+        down_cmd = f'docker compose -f {compose_file} down'
+        down_result = execute_command(down_cmd, cwd=compose_path, timeout=60)
+        deployment_log.append({
+            'step': 'docker_down',
+            'command': down_cmd,
+            'success': down_result['success'],
+            'output': down_result['stdout'],
+            'error': down_result['stderr']
+        })
+
         # Build and restart with --no-cache to force fresh builds
         # This prevents Docker layer caching from hiding code changes (especially CSS/JS)
         # CACHE_BUST arg ensures frontend rebuild even with aggressive Docker caching
+        # Source .env.backend to get VITE_* vars for frontend build
+        logger.info(f"Step 2b: Building and starting containers")
         timestamp = datetime.utcnow().isoformat()
-        compose_cmd = f'CACHE_BUST={timestamp} docker compose -f {compose_file} build --no-cache && docker compose -f {compose_file} up -d'
+        compose_cmd = f'source .env.backend 2>/dev/null || true && CACHE_BUST={timestamp} docker compose -f {compose_file} build --no-cache && docker compose -f {compose_file} up -d'
         compose_result = execute_command(compose_cmd, cwd=compose_path, timeout=600)
         deployment_log.append({
             'step': 'docker_compose',
