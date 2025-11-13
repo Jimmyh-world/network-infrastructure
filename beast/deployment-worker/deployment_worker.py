@@ -200,10 +200,10 @@ def deploy_repo(repo_name: str, commit: str, branch: str) -> Dict:
         # Build and restart with --no-cache to force fresh builds
         # This prevents Docker layer caching from hiding code changes (especially CSS/JS)
         # CACHE_BUST arg ensures frontend rebuild even with aggressive Docker caching
-        # Source .env.backend to get VITE_* vars for frontend build
+        # Export VITE_* vars from .env.backend for frontend build
         logger.info(f"Step 2b: Building and starting containers")
         timestamp = datetime.utcnow().isoformat()
-        compose_cmd = f'source .env.backend 2>/dev/null || true && CACHE_BUST={timestamp} docker compose -f {compose_file} build --no-cache && docker compose -f {compose_file} up -d'
+        compose_cmd = f'bash -c "set -a; source .env.backend 2>/dev/null || true; set +a; CACHE_BUST={timestamp} docker compose -f {compose_file} build --no-cache && docker compose -f {compose_file} up -d"'
         compose_result = execute_command(compose_cmd, cwd=compose_path, timeout=600)
         deployment_log.append({
             'step': 'docker_compose',
